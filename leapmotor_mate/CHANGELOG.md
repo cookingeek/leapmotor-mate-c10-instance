@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.0.2
+
+- New **Vehicle** page: tyre pressure, doors, windows, panoramic roof and temperatures (gradient status cards).
+- `find_car` fix.
+- Installs leapmotor-mate `v1.0.2`.
+
 ## 1.0.1
 
 - Home Assistant ingress support: the web UI now works correctly inside the add-on panel.

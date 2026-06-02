@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.0.8
+
+- Charges page: expandable per-session charging-power chart (power over time + SOC).
+- Settings: tidier masonry layout (removed the empty gap between cards).
+- Installs leapmotor-mate `v1.0.8`.
+
 ## 1.0.7
 
 - Language can now be changed from the Settings page (not only in the setup wizard), so already-installed users can switch between English, Italian and French.

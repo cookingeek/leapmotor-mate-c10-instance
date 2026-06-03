@@ -23,7 +23,7 @@ setup wizard.
    operation **PIN**. Your model and battery are auto-detected.
 
 The poller then starts and data begins to appear: overview, trips, charges,
-statistics and remote commands.
+statistics, remote commands and navigation.
 
 ## Configuration
 
@@ -53,6 +53,22 @@ energy, charging speed, max available power), a control to set the wallbox max
 charging current, and an **AC-vs-DC comparison** per charge session — what the
 wallbox delivers (AC) vs what the car receives into the battery (DC), with the
 charging efficiency, as a year/month/day history.
+
+### Navigation
+
+The **Navigation** page lets you search an address (street + city), preview it on
+the map, and **send the destination straight to the car's built-in navigation** —
+it appears in the vehicle's nav system, no PIN required. The page also shows the
+car's **current address** (reverse-geocoded from its GPS).
+
+Address lookup works out of the box with a free OpenStreetMap-based provider (no
+key). For better street/house-number coverage you can optionally choose a provider
+and paste an API key under **Settings → Address lookup**:
+
+- **Geoapify** — recommended (free, no credit card, includes house numbers)
+- **LocationIQ** or **TomTom**
+
+If a keyed provider errors, Mate automatically falls back to the keyless lookup.
 
 ## Data & persistence
 

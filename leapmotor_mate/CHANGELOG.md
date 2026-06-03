@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.1.0
+
+- **Wallbox integration (optional).** Pair a wallbox already in Home Assistant to get a dedicated Wallbox page: live panel (power, status, session energy, charging speed, max available power) + session cost, a max-current control, and an AC-vs-DC comparison per charge session (kWh delivered vs into the battery + efficiency) as a year/month/day history. As an add-on it connects to HA automatically — no URL or token needed. Enable it in Settings → Wallbox present.
+- This add-on now requests the `homeassistant_api` permission (needed by the Wallbox feature to read entities/history and set the charging current).
+- Trips page redesign, Vehicle page restyle, three-column Settings.
+- Installs leapmotor-mate `v1.1.0`.
+
 ## 1.0.8
 
 - Charges page: expandable per-session charging-power chart (power over time + SOC).

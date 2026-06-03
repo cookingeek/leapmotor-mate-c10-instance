@@ -39,6 +39,21 @@ the web UI under **Settings** — no YAML required.
 - **Polling** — parked (default 30 s) and driving (default 10 s). Polling the
   Leapmotor cloud does **not** wake or drain the car.
 
+### Wallbox (optional)
+
+If you charge at home and have a **wallbox already in Home Assistant** (Wallbox
+Pulsar, Easee, go-e, Keba, OCPP, …), Mate can pair with it. Enable it in
+**Settings → Wallbox present** — as an add-on it connects to Home Assistant
+**automatically** (no URL or token needed), regardless of how HA is exposed
+(HTTP, HTTPS, Nabu Casa). Then expand **Entity mapping** to assign your wallbox
+sensors (Mate pre-selects them and lists only your wallbox's own entities).
+
+You get a dedicated **Wallbox** page with a live panel (power, status, session
+energy, charging speed, max available power), a control to set the wallbox max
+charging current, and an **AC-vs-DC comparison** per charge session — what the
+wallbox delivers (AC) vs what the car receives into the battery (DC), with the
+charging efficiency, as a year/month/day history.
+
 ## Data & persistence
 
 The SQLite database and the uploaded certificate live in the add-on's

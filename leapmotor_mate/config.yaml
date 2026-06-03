@@ -1,12 +1,16 @@
 name: "LeapMotor Mate"
 description: "Trip tracking and remote control for Leapmotor vehicles (B10, C10, T03)"
-version: "1.0.8"
+version: "1.1.0"
 slug: "leapmotor_mate"
 url: "https://github.com/ProtossBlaster/leapmotor-mate"
 init: false
 startup: "application"
 boot: "auto"
 homeassistant: "2024.1.0"
+
+# Lets the add-on read entities/history and set the charging current via the HA
+# Core API (Supervisor proxy) for the optional Wallbox feature.
+homeassistant_api: true
 
 arch:
   - aarch64

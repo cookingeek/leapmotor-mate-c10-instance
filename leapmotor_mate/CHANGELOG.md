@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.6.0
+
+- **Responsive layout for phones and tablets** — on small screens the sidebar becomes a slide-out drawer with a hamburger menu and the content reflows to full width. Desktop layout unchanged. Contributed by @hubcasale (#6) — thanks!
+- Installs leapmotor-mate `v1.6.0`.
+
 ## 1.5.1
 
 - **Configurable charge-detection threshold** — set the minimum charging current that counts as charging in **Settings → Charge detection** (0.5–16 A, default 2 A). Useful for low-power/experimental supplies; applied live by the poller. Thanks @hubcasale (#5).

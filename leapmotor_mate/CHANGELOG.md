@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.3.2
+
+- Fix tyre pressures shown on the wrong wheels (corrected B10 signal→wheel mapping).
+- Remove the bogus "outside temperature" (that signal is the seat-ventilation level; no ambient signal exists).
+- Installs leapmotor-mate `v1.3.2`.
+
 ## 1.3.1
 
 - Lower the charge-detection threshold (3.0 A → 2.0 A) so low-power home charges are still detected.

@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.6.3
+
+- Vehicle page redesigned with **Material Design icons** (doors, trunk, windows, roof, tyres, temperatures) instead of emoji — windows even switch between open/closed icons.
+- Panoramic roof shows its **real state** (read live from the car, like the Commands page) instead of "no data".
+- Version number now visible on mobile (top bar).
+- Installs leapmotor-mate `v1.6.3`.
+
 ## 1.6.2
 
 - **Fix wrong clock times for users outside Italy** — the UI now uses your Home Assistant timezone instead of a hardcoded Europe/Rome fallback. Recommended update if you're not in Italy.

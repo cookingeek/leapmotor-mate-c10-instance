@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.6.2
+
+- **Fix wrong clock times for users outside Italy** — the UI now uses your Home Assistant timezone instead of a hardcoded Europe/Rome fallback. Recommended update if you're not in Italy.
+- Overview "State" follows the gear (a stop in traffic = "Driving", not "Parked").
+- Panoramic roof shows "Operate first" instead of "No data" when its position is unknown (B10 limitation).
+- Installs leapmotor-mate `v1.6.2`.
+
 ## 1.6.1
 
 - **Fix poller regression (since 1.5.1):** the charge-detection setting was applied with a wrong call that errored every cycle, so the poller stopped collecting data. Polling/trip/charge detection restored — **update strongly recommended** if you were on 1.5.1 or 1.6.0.

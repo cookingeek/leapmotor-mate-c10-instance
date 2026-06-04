@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.8.1
+
+- **Climate over MQTT is now four buttons** — *Quick Cool*, *Quick Heat*, *Defrost* and *A/C Off* — instead of a single on/off switch (which only ran the ventilation fan and whose OFF did nothing). Turning the A/C fully **off** is best-effort: the vehicle cloud doesn't reliably honour it (an open issue with the Leapmotor API). The old switch is removed from Home Assistant automatically; the read-only *Climate* state sensor stays. (Reported in #14)
+- **Malaysian Ringgit (MYR)** added to the display currencies. (Requested in #13)
+- **Fix: Recent Trips on the Overview showed UTC** instead of your local time; it now matches the Trips page. (#12)
+- **Quieter logs when the car is asleep** — the deep-sleep back-off is logged once instead of every cycle with a climbing "after N tries" count.
+- Installs leapmotor-mate `v1.8.1`.
+
 ## 1.8.0
 
 - **Customizable display currency.** The euro is no longer hardcoded — pick your currency from **30 world currencies** (€, $, £, CHF, kr, zł, Ft, ¥, …) in **Settings → Language & Currency**. Every cost (Overview, Charges, Wallbox, totals) reformats to it, with the correct symbol placement (`$12.50` vs `12,50 €`) and decimal digits per currency (2 for most, 0 for yen/forint/won). The number format follows the selected UI language. _(Requested in #10.)_

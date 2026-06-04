@@ -91,7 +91,9 @@ via MQTT Discovery. In **Settings → MQTT**, enable it and enter your broker (h
 port, username/password; TLS optional) — use **Test connection** to verify it before
 saving. Home Assistant auto-creates a *Leapmotor Mate* device with sensors, binary
 sensors (doors/windows/lock/charging), a GPS tracker, command buttons (lock/unlock,
-trunk, find car) and a climate switch. After a command the state updates immediately.
+trunk, find car) and climate buttons — Quick Cool / Quick Heat / Defrost / A/C Off
+(turning the A/C fully off is best-effort; the cloud doesn't always honour it). After
+a command the state updates immediately.
 The **topic prefix** scopes the device, so a second instance on a different prefix
 won't clash with this one.
 

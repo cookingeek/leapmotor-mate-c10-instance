@@ -1,5 +1,14 @@
 # Changelog
 
+## 1.9.0
+
+- **New: Battery health page.** Estimates your pack's usable capacity and a state-of-health % over time. For each charge Mate integrates the **measured** energy delivered (voltage × current) and divides it by the SoC gained, so the estimate tracks real battery ageing instead of just echoing the configured capacity. Uses charges with a meaningful SoC rise; the headline figure is smoothed over recent charges. It's an estimate, not a lab measurement.
+- **New: Map page.** Draws every trip as a connected route line (white casing + blue line, readable over any road colour) — everywhere the car has driven — plus your most-visited places as bubbles sized by visit count.
+- **New: SoC & speed chart on each trip.** The trip detail page now charts state-of-charge and speed over the drive (the SoC axis auto-zooms to the trip's range), replacing the old speed bar.
+- **Fix: T03 (EU) vehicles now report live data.** The European API returns the live status as named fields instead of the numeric `signal` block used by C10/B10, so the poller previously saw "no live data" forever. Mate now parses both formats. (Root cause on the T03 in #9.)
+- Both new pages use data already collected (charge telemetry and trip GPS) — nothing new is recorded.
+- Installs leapmotor-mate `v1.9.0`.
+
 ## 1.8.2
 
 - **Fix: shared cars now report live data.** A car *shared* to your account (the recommended setup — a separate account from your phone, with the car shared to it) could leave the poller stuck on *"Vehicle returned no live data"* forever, even while driving, because the Leapmotor cloud needs the `carId` in the status request for shared cars. Mate now sends it automatically when a shared car comes back empty, and the log shows `shared: true/false` so this is diagnosable. (Reported on the T03 in #9.)

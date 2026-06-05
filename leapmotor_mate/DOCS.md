@@ -97,6 +97,19 @@ a command the state updates immediately.
 The **topic prefix** scopes the device, so a second instance on a different prefix
 won't clash with this one.
 
+### Battery health
+
+The **Battery health** page (🩺) estimates your pack's usable capacity and a
+state-of-health % over time. For each charge it integrates the *measured* energy
+delivered and divides it by the SoC gained, so the trend reflects real battery ageing.
+It builds up as you log more charges — it's an estimate, not a lab measurement.
+
+### Map
+
+The **Map** page (🌍) draws every trip as a connected route line and highlights your
+most-visited places (sized by how often you've been there). It uses the trip GPS already
+recorded — nothing extra is collected.
+
 ## Data & persistence
 
 The SQLite database and the uploaded certificate live in the add-on's

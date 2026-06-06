@@ -3,7 +3,7 @@
 All notable changes to LeapMotor Mate are documented here.
 This project adheres to [Semantic Versioning](https://semver.org/).
 
-## [1.11.5] — 2026-06-07
+## 1.11.5 — 2026-06-07
 
 ### Added
 - **Unlock charge cable** — unlock the B10 charge port (`unlock_charger`, right 192), promised on #19.
@@ -24,7 +24,7 @@ This project adheres to [Semantic Versioning](https://semver.org/).
   - **Consistent card headers** (icon + title) on every card, including Vehicle.
   - Merged the old Find Car + Battery cards into **Quick actions**; "Preheat" → "Preheat battery".
 
-## [1.11.4] — 2026-06-06
+## 1.11.4 — 2026-06-06
 
 ### Added
 - **Full comfort controls on the B10** (thanks @kerniger, leapmotor-ha#41, payloads captured from the app):
@@ -49,7 +49,7 @@ This project adheres to [Semantic Versioning](https://semver.org/).
   text) now carries the state: **closed = green**, **open = sky-blue** (doors, trunk, windows and the
   panoramic roof) — blue reads as "open", not as an alarm.
 
-## [1.11.3] — 2026-06-06
+## 1.11.3 — 2026-06-06
 
 ### Added
 - **Working A/C On/Off on the B10.** Turning the climate **fully off** now works on the B10: a new
@@ -66,7 +66,7 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 - Reported the B10 A/C-off payload upstream (the library's `ac_off()` sends `operate=close`, which only
   flips the B10 to AUTO; the B10 needs `operate=off`).
 
-## [1.11.2] — 2026-06-06
+## 1.11.2 — 2026-06-06
 
 ### Added
 - **Climate "turn off" note.** The Commands page **Climate** card now shows a highlighted notice that
@@ -77,7 +77,7 @@ This project adheres to [Semantic Versioning](https://semver.org/).
   confirmation, reminding you that Mate can't fully power the climate off afterwards (use the Leapmotor
   app or the car). The confirm fires only on the *On* action, not when turning a function off.
 
-## [1.11.1] — 2026-06-06
+## 1.11.1 — 2026-06-06
 
 ### Added
 - **Total energy consumed per trip.** The trip detail now shows the trip's total **kWh consumed**
@@ -86,7 +86,7 @@ This project adheres to [Semantic Versioning](https://semver.org/).
   price per kWh of the last charge before the trip. Currency-aware (formatted with the configured
   currency). (#18)
 
-## [1.11.0] — 2026-06-06
+## 1.11.0 — 2026-06-06
 
 ### Added
 - **Comfort sensors on the Commands page.** A new **Comfort** card (beside the controls block)
@@ -115,7 +115,7 @@ This project adheres to [Semantic Versioning](https://semver.org/).
   working / broken / untested from on-car probing; confirmed-broken non-core features are hidden).
 - CI workflow that auto-syncs the add-on repository's version on each published release.
 
-## [1.10.0] — 2026-06-05
+## 1.10.0 — 2026-06-05
 
 ### Added
 - **Collapsible integration cards (Settings).** The ABRP, MQTT and Wallbox cards now tuck
@@ -141,7 +141,7 @@ This project adheres to [Semantic Versioning](https://semver.org/).
   B10/B11 status path natively) and replaced the hand-rolled last-week energy and
   consumption-rank endpoints with the library's native methods.
 
-## [1.9.0] — 2026-06-05
+## 1.9.0 — 2026-06-05
 
 ### Added
 - **Battery health page.** A new *Battery health* page estimates your pack's usable
@@ -171,7 +171,7 @@ This project adheres to [Semantic Versioning](https://semver.org/).
   logged) — nothing new is collected. Very old sessions whose GPS samples were pruned
   simply won't appear.
 
-## [1.8.2] — 2026-06-05
+## 1.8.2 — 2026-06-05
 
 ### Added
 - **Encrypted credentials at rest.** Your Leapmotor password/PIN and the other stored
@@ -224,7 +224,7 @@ This project adheres to [Semantic Versioning](https://semver.org/).
   running as a Home Assistant add-on (ingress already authenticates). When enabled it
   also closes the previously open re-`POST /setup` path.
 
-## [1.8.1] — 2026-06-04
+## 1.8.1 — 2026-06-04
 
 ### Added
 - **Climate over MQTT is now four buttons** — *Quick Cool*, *Quick Heat*, *Defrost*
@@ -245,7 +245,7 @@ This project adheres to [Semantic Versioning](https://semver.org/).
   back-off is now logged once instead of repeating every cycle with a climbing
   "after N tries" count that read like an escalating failure.
 
-## [1.8.0] — 2026-06-04
+## 1.8.0 — 2026-06-04
 
 ### Added
 - **Customizable display currency.** The euro is no longer hardcoded — pick your
@@ -257,7 +257,7 @@ This project adheres to [Semantic Versioning](https://semver.org/).
   the selected UI language. The Settings *Language* card is now *Language &
   Currency*, listing currencies by name (e.g. "Euro (€) — EUR"). (Requested in #10.)
 
-## [1.7.1] — 2026-06-04
+## 1.7.1 — 2026-06-04
 
 ### Fixed
 - **Scary `Poll error: 'signal'` when the car is asleep.** When the Leapmotor cloud
@@ -268,7 +268,7 @@ This project adheres to [Semantic Versioning](https://semver.org/).
   retries a couple of times, then backs off — and recovers on its own once the car
   reports again. (#9)
 
-## [1.7.0] — 2026-06-04
+## 1.7.0 — 2026-06-04
 
 ### Added
 - **Charge Prices page with time-of-use tariffs.** A dedicated *Charge Prices*
@@ -299,7 +299,7 @@ This project adheres to [Semantic Versioning](https://semver.org/).
   different prefix without it overwriting the same entities. The default prefix is
   unchanged, so existing installs are unaffected.
 
-## [1.6.3] — 2026-06-04
+## 1.6.3 — 2026-06-04
 
 ### Changed
 - **Vehicle page redesigned with Material Design icons.** Doors, trunk, windows,
@@ -313,7 +313,7 @@ This project adheres to [Semantic Versioning](https://semver.org/).
   instead of relying on the last command / showing "no data".
 - **Version number is now visible on mobile** (in the top bar), not only on desktop.
 
-## [1.6.2] — 2026-06-04
+## 1.6.2 — 2026-06-04
 
 ### Fixed
 - **Wrong clock times for users outside Italy.** The add-on fell back to a
@@ -330,7 +330,7 @@ This project adheres to [Semantic Versioning](https://semver.org/).
   is unknown — the B10 doesn't report the sunblind's position, so Mate only knows
   it after you open/close it from the app.
 
-## [1.6.1] — 2026-06-04
+## 1.6.1 — 2026-06-04
 
 ### Fixed
 - **Poller regression (since 1.5.1).** The configurable charge-detection setting
@@ -340,7 +340,7 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 - **Setup PIN field said "6-digit".** The Leapmotor operation PIN is **4 digits** —
   the placeholder/hint and the input length now say 4.
 
-## [1.6.0] — 2026-06-04
+## 1.6.0 — 2026-06-04
 
 ### Added
 - **Responsive layout for phones and tablets.** On small screens the sidebar
@@ -348,7 +348,7 @@ This project adheres to [Semantic Versioning](https://semver.org/).
   to full width, and the maps no longer overlap the navigation. The desktop layout
   is unchanged. Contributed by **@hubcasale** (#6) — thank you!
 
-## [1.5.1] — 2026-06-04
+## 1.5.1 — 2026-06-04
 
 ### Added
 - **Configurable charge-detection threshold.** The minimum charging current that
@@ -357,7 +357,7 @@ This project adheres to [Semantic Versioning](https://semver.org/).
   low-power / experimental supplies. The poller applies it live, no restart needed.
   Thanks @hubcasale for the suggestion.
 
-## [1.5.0] — 2026-06-04
+## 1.5.0 — 2026-06-04
 
 ### Added
 - **Navigation page 🧭 — send a destination to the car.** Type a street + city,
@@ -384,7 +384,7 @@ This project adheres to [Semantic Versioning](https://semver.org/).
   **watts** (or energy in **Wh**) are now normalised to kW/kWh everywhere — the
   AC-vs-DC comparison and the per-session power chart, not just the live panel.
 
-## [1.4.0] — 2026-06-04
+## 1.4.0 — 2026-06-04
 
 ### Added
 - **German (Deutsch) UI language.** Full translation of the web interface — nav,
@@ -399,7 +399,7 @@ This project adheres to [Semantic Versioning](https://semver.org/).
   selected language. Month names (full and abbreviated) are now translated for all
   languages (it/fr/de/en) without relying on system locales.
 
-## [1.3.2] — 2026-06-04
+## 1.3.2 — 2026-06-04
 
 ### Fixed
 - **Tyre pressures were shown on the wrong wheels.** The B10 signal→wheel mapping is
@@ -410,14 +410,14 @@ This project adheres to [Semantic Versioning](https://semver.org/).
   was meaningless. Dropped from the Vehicle page, the MQTT sensors and ABRP
   telemetry (battery/cabin/AC-target temperatures were already correct).
 
-## [1.3.1] — 2026-06-04
+## 1.3.1 — 2026-06-04
 
 ### Changed
 - Lower the charge-detection current threshold from 3.0 A to 2.0 A so low-power
   home charges (and the tail end of a charge) are still detected as charging. The
   regen detection threshold is separate and unaffected.
 
-## [1.3.0] — 2026-06-04
+## 1.3.0 — 2026-06-04
 
 ### Added
 - **ABRP (A Better Route Planner) live telemetry** — optional. Enable it and paste
@@ -430,7 +430,7 @@ This project adheres to [Semantic Versioning](https://semver.org/).
   (doors/windows/lock/charging), a GPS tracker, command buttons (lock/unlock,
   trunk, find car) and a climate switch. TLS supported. Off by default.
 
-## [1.2.0] — 2026-06-04
+## 1.2.0 — 2026-06-04
 
 ### Added
 - **Charge type confirmation.** A new charge is no longer silently assumed to be
@@ -448,7 +448,7 @@ This project adheres to [Semantic Versioning](https://semver.org/).
   plugged in — otherwise the live reading could be another vehicle on the same
   wallbox. Session cost and max available power are always shown.
 
-## [1.1.1] — 2026-06-04
+## 1.1.1 — 2026-06-04
 
 ### Fixed
 - **Wallbox in add‑on mode** — the add‑on now correctly detects the Home Assistant
@@ -458,7 +458,7 @@ This project adheres to [Semantic Versioning](https://semver.org/).
   connected". `run.sh` now loads it from the s6 container environment, and logs
   whether the HA API is available at startup.
 
-## [1.1.0] — 2026-06-04
+## 1.1.0 — 2026-06-04
 
 ### Added
 - **Wallbox integration (Home Assistant)** — optional. Pair a wallbox already in
@@ -484,7 +484,7 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 - Quantities across the UI are shown to at most two decimals, at full precision
   (no over‑rounding).
 
-## [1.0.8] — 2026-06-02
+## 1.0.8 — 2026-06-02
 
 ### Added
 - **Charging-power chart** in the Charges page. Each session has an expandable
@@ -497,7 +497,7 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 - **Settings layout**: cards now use a masonry column layout, removing the empty
   gap that appeared under shorter cards (e.g. Language) next to taller ones.
 
-## [1.0.7] — 2026-06-02
+## 1.0.7 — 2026-06-02
 
 ### Added
 - **Language selector in Settings**. The language could previously only be chosen
@@ -505,7 +505,7 @@ This project adheres to [Semantic Versioning](https://semver.org/).
   Settings now has a language dropdown (🇬🇧 English / 🇮🇹 Italiano / 🇫🇷 Français);
   changing it saves immediately and reloads the page in the new language.
 
-## [1.0.6] — 2026-06-02
+## 1.0.6 — 2026-06-02
 
 ### Added
 - **French language** (🇫🇷). The setup wizard now offers three languages — English,
@@ -518,7 +518,7 @@ This project adheres to [Semantic Versioning](https://semver.org/).
   regardless of the chosen language; they are now translated (this also fixes
   Italian, where they were previously shown in English too).
 
-## [1.0.5] — 2026-06-02
+## 1.0.5 — 2026-06-02
 
 ### Fixed
 - **Poller self-recovery**: if the account TLS certificate temp file vanished from
@@ -527,7 +527,7 @@ This project adheres to [Semantic Versioning](https://semver.org/).
   login to re-create the certificate on cert/auth/token/connection errors (rate-
   limited to ~once per minute). Also recovers from auth/token drops.
 
-## [1.0.4] — 2026-06-02
+## 1.0.4 — 2026-06-02
 
 ### Fixed
 - **Local time in the UI**: trip/charge times were shown in UTC; they are now
@@ -538,13 +538,13 @@ This project adheres to [Semantic Versioning](https://semver.org/).
   HA reference: a trip ends only when gear **P** is held ~1 min (red lights / brief
   stops in gear D no longer split it), and movements **< 0.5 km** are discarded.
 
-## [1.0.3] — 2026-06-02
+## 1.0.3 — 2026-06-02
 
 ### Fixed
 - **Statistics**: the "Consumption trend (6 weeks)" chart legend showed week
   dates as `MM-DD` (US-style); they are now formatted as `DD/MM`.
 
-## [1.0.2] — 2026-06-02
+## 1.0.2 — 2026-06-02
 
 ### Added
 - **Vehicle page**: new sidebar page with live tyre pressure (per corner, with
@@ -556,7 +556,7 @@ This project adheres to [Semantic Versioning](https://semver.org/).
   registered remote action so it reaches the car.
 - Install docs spell out the exact add-on repository URL.
 
-## [1.0.1] — 2026-06-01
+## 1.0.1 — 2026-06-01
 
 ### Fixed
 - **Home Assistant ingress support**: the web UI now works inside the add-on
@@ -564,7 +564,7 @@ This project adheres to [Semantic Versioning](https://semver.org/).
   `X-Ingress-Path` header) and all template/JS URLs are relative; server
   redirects carry the ingress prefix. Standalone is unaffected.
 
-## [1.0.0] — 2026-06-01
+## 1.0.0 — 2026-06-01
 
 First public release.
 
@@ -577,6 +577,3 @@ First public release.
 - Configurable polling (parked/driving), bilingual UI (EN/IT).
 - Home Assistant add-on and standalone Docker deployment.
 
-[1.0.2]: https://github.com/ProtossBlaster/leapmotor-mate/releases/tag/v1.0.2
-[1.0.1]: https://github.com/ProtossBlaster/leapmotor-mate/releases/tag/v1.0.1
-[1.0.0]: https://github.com/ProtossBlaster/leapmotor-mate/releases/tag/v1.0.0

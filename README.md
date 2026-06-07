@@ -1,6 +1,6 @@
 # LeapMotor Mate — Home Assistant Add-on
 
-Home Assistant add-on for [**LeapMotor Mate**](https://github.com/ProtossBlaster/leapmotor-mate) — trip tracking, charge logging, navigation and remote control for Leapmotor vehicles (B10 · C10 · T03).
+Home Assistant add-on for [**LeapMotor Mate**](https://github.com/ProtossBlaster/leapmotor-mate) — trip tracking, charge logging, charge scheduling, navigation and remote control for Leapmotor vehicles (B10 · C10 · T03).
 
 [![Open your Home Assistant instance and show the LeapMotor Mate add-on.](https://my.home-assistant.io/badges/supervisor_addon.svg)](https://my.home-assistant.io/redirect/supervisor_addon/?addon=5e44ad0d_leapmotor_mate&repository_url=https%3A%2F%2Fgithub.com%2FProtossBlaster%2Fleapmotor-mate-addon)
 

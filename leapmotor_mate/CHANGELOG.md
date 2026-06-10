@@ -3,6 +3,14 @@
 All notable changes to LeapMotor Mate are documented here.
 This project adheres to [Semantic Versioning](https://semver.org/).
 
+## 1.16.4 — 2026-06-10
+
+### Fixed
+- **The “Delete trip” button actually deletes now.** It had never worked since it shipped (v1.13.0): its
+  relative URL resolved against the app root, so the request went to a route that doesn’t exist and the
+  button silently did nothing. If you've ever pressed it and the trip stubbornly stayed — that was this.
+  Verified end-to-end, standalone and behind Home Assistant ingress.
+
 ## 1.16.3 — 2026-06-10
 
 ### Added
@@ -11,6 +19,12 @@ This project adheres to [Semantic Versioning](https://semver.org/).
   work as a single lock/unlock button. There’s now also a **switch** entity (ON = locked): widgets *can*
   toggle a switch, so one tap locks, the next unlocks. The lock entity stays for dashboards. *(Validated
   end-to-end on a real MQTT broker.)*
+
+### Removed
+- **The separate Lock / Unlock buttons in Home Assistant** — fully redundant now that the Door Lock entity
+  (state + both actions) and the Door Lock Toggle switch exist; they disappear automatically on update. If
+  you had them on a dashboard, swap in **Door Lock**. Automations that publish the raw `lock` / `unlock`
+  MQTT commands keep working unchanged.
 
 ### Fixed
 - **🅿️ A few-metres manoeuvre is no longer logged as a “1 km” trip.** The odometer reads in whole km, so a

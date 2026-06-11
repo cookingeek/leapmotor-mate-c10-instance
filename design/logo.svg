@@ -1,0 +1,9 @@
+<svg width="500" height="110" viewBox="0 0 500 110" xmlns="http://www.w3.org/2000/svg">
+  <rect x="0" y="0" width="500" height="110" rx="14" fill="#0f172a"/>
+  <path d="M42,52 L50,36 Q52,32 56,32 L76,32 Q80,32 82,35 L94,52 Z" fill="#e2e8f0"/>
+  <rect x="20" y="50" width="88" height="23" rx="9" fill="#e2e8f0"/>
+  <circle cx="44" cy="72" r="10" fill="#0f172a" stroke="#e2e8f0" stroke-width="5"/>
+  <circle cx="88" cy="72" r="10" fill="#0f172a" stroke="#e2e8f0" stroke-width="5"/>
+  <polyline points="14,94 50,94 58,84 66,101 73,94 116,94" fill="none" stroke="#14b8a6" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="150" y="70" font-family="-apple-system, 'Helvetica Neue', Arial, sans-serif" font-size="40" font-weight="500" fill="#e2e8f0">LeapMotor <tspan fill="#14b8a6" font-weight="700">Mate</tspan></text>
+</svg>

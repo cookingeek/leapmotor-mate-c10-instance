@@ -11,6 +11,8 @@ privacy-first companion. Think *TeslaMate*, for Leapmotor.
 
 Supported models: **B05 · B10 · C10 · T03** — full-electric (BEV) only, European spec (the Leapmotor lineup distributed by Stellantis/Leapmotor). Not for REEV / range-extender versions.
 
+⚠️ **Use a Leapmotor account dedicated to Mate only** — never signed into another app, add-on, Docker or integration at the same time (Leapmotor allows ~one session per account → concurrent clients evict each other → the car goes offline → missing/inconsistent data). See the **Documentation** tab.
+
 ## Highlights
 
 - 🚗 **Trips** — automatic detection with GPS track, distance, energy, efficiency and regen

@@ -4,10 +4,12 @@ Trip tracking, charge logging and remote control for full-electric Leapmotor veh
 
 ## Before you start
 
-**Use a dedicated Leapmotor account — not the one on your phone.** The Leapmotor
-cloud binds a session per device, so a second client can evict your phone (and
-vice-versa). Create a separate account in the Leapmotor app and share the car
-with it.
+**The Leapmotor account Mate uses must be dedicated to Mate and used by nothing else.**
+Leapmotor allows only ~one active session per account, so **any other client on the same
+account — the official phone app, another add-on, a Docker container, or any other
+integration — fights Mate for the session**: they keep evicting each other, the car goes
+**offline** and you get **missing or inconsistent data**. Create a separate account in the
+Leapmotor app, share the car with it (all permissions, permanent), and use it **only** in Mate.
 
 You also need the Leapmotor **app TLS certificate** (the same for everyone, it
 identifies the app, not you): the files `app.crt` and `app.key`, available at

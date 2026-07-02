@@ -3,10 +3,15 @@
 All notable changes to LeapMotor Mate are documented here.
 This project adheres to [Semantic Versioning](https://semver.org/).
 
+## 2.0.1 — 2026-07-02
+
+### Fixed
+- **No more impossible average consumption on driving-energy windows that start before Mate was installed** (#105, thanks @riri19 for the report). The official cloud figure covers the car's whole life, but Mate's local trip history only starts at install — pairing the two on the "Since the beginning" preset (or any custom range starting earlier than your first recorded trip) produced a meaningless kWh/100km. Such windows now show the official energy split alone, with a note giving the date your local trip stats begin; ranges fully covered by Mate keep the Distance/Duration/Average row as before.
+
 ## 2.0.0 — 2026-07-01
 
 ### Added
-- **Dynamic electricity pricing from a Home Assistant sensor** (#104, thanks @Wartopia for the idea and the coffee ☕). If you're on a dynamic/spot-price contract (Nordpool, Tibber, ENTSO-E, or your utility's own integration), Mate can now price each charging session from that sensor's history instead of a fixed price — new "Dynamic (HA sensor)" mode on the Prices page, next to Flat and Time-of-use. **Requires Home Assistant** (add-on or a standalone install connected to HA) with a price-per-kWh sensor to point at; without one, or whenever it's briefly unreachable, Mate falls back to your flat base price so a session is never left uncosted.
+- **Dynamic electricity pricing from a Home Assistant sensor** (#104, thanks @Wartopia for the idea). If you're on a dynamic/spot-price contract (Nordpool, Tibber, ENTSO-E, or your utility's own integration), Mate can now price each charging session from that sensor's history instead of a fixed price — new "Dynamic (HA sensor)" mode on the Prices page, next to Flat and Time-of-use. **Requires Home Assistant** (add-on or a standalone install connected to HA) with a price-per-kWh sensor to point at; without one, or whenever it's briefly unreachable, Mate falls back to your flat base price so a session is never left uncosted.
 - Not a breaking change — if you don't use it, nothing changes. Bumped to 2.0.0 as a milestone after a month of near-daily releases, not because anything existing behaves differently.
 
 ## 1.36.2 — 2026-07-01

@@ -1,0 +1,42 @@
+name: "LeapMotor Mate"
+description: "Trip tracking, charge logging, charge scheduling, navigation and remote control for full-electric Leapmotor vehicles: B05, B10, C10, T03 (BEV only — not REEV)"
+version: "2.5.4"
+slug: "leapmotor_mate"
+url: "https://github.com/ProtossBlaster/leapmotor-mate"
+# Pull the prebuilt multi-arch image from GHCR (built by the code repo's docker-publish.yml)
+# instead of building from source on the user's device. The Supervisor appends ":<version>"
+# and resolves the right arch from the manifest → much faster installs/updates, no on-device
+# build. Validated end-to-end on real HA (aarch64): pull + ingress + Supervisor token.
+image: "ghcr.io/protossblaster/leapmotor-mate"
+init: false
+startup: "application"
+boot: "auto"
+homeassistant: "2024.1.0"
+
+# Lets the add-on read entities/history and set the charging current via the HA
+# Core API (Supervisor proxy) for the optional Wallbox feature.
+homeassistant_api: true
+
+arch:
+  - aarch64
+  - amd64
+
+map:
+  - type: data
+    read_only: false
+
+ingress: true
+ingress_port: 4000
+panel_icon: "mdi:car-electric"
+panel_title: "LeapMotor Mate"
+
+ports:
+  4000/tcp: null
+ports_description:
+  4000/tcp: "Web UI (not needed with ingress)"
+
+options:
+  log_level: "info"
+
+schema:
+  log_level: "list(trace|debug|info|warning|error|critical)"

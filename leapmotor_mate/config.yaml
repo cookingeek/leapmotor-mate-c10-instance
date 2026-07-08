@@ -28,7 +28,8 @@ map:
 ingress: true
 ingress_port: 4000
 panel_icon: "mdi:car-electric"
-panel_title: "LeapMotor Mate"
+panel_title: "LeapMotor C10"
+panel_admin: false
 
 ports:
   4000/tcp: null

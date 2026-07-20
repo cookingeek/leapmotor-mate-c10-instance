@@ -3,6 +3,24 @@
 All notable changes to LeapMotor Mate are documented here.
 This project adheres to [Semantic Versioning](https://semver.org/).
 
+## 2.8.0 — 2026-07-20
+
+### Added
+- **Set the car's charging plan from Home Assistant.** Until now the charge schedule — start time, end time, target level, which days — could only be set inside Mate's own interface, which left it invisible to automations. Mate now publishes a **Charge Schedule** entity over MQTT that accepts a small JSON plan, e.g. `{"start":"23:00","stop":"07:00","soc":90,"active":true}`, so you can drive it from an automation: charge when electricity is cheapest, when your solar is producing, or on any condition Home Assistant can express. **Every field is optional, and anything you leave out keeps its current value** — an automation can send just `{"start":"23:00"}` and the rest of your plan stays exactly as it was. Bad input (malformed JSON, an impossible time, a target outside 50–100 %) is refused outright rather than half-applied, and the entity reports back the plan that was actually written so Home Assistant doesn't show an empty box. Thanks to **@chengler**, who worked out the payloads on his own T03 and shared them in #151 — the tests replay his exact sequence.
+
+## 2.7.1 — 2026-07-20
+
+### Fixed
+- **Changing the charge limit from Home Assistant no longer wipes a "start time only" charging plan.** If your car has an enabled charge plan with just a start time and no weekday selection, moving the *Charge Limit* number in Home Assistant silently **disabled that plan and reset its start to 00:00** — so the car simply stopped charging overnight, with nothing visibly going wrong to explain it. This is the same upstream quirk that was fixed for the web UI back in v2.5.8 (the library's charge-limit helper falls back to an all-defaults, schedule-disabled payload whenever the cloud omits the weekday mask — which is exactly what it does for start-time-only plans), but the MQTT path was still calling that helper directly. It now performs the same read-modify-write the web UI does: **only the target SoC changes**, while the plan's enabled state, start/end window, days, circulation and recharge all round-trip untouched. Owners whose plan has weekdays selected were never affected. Thanks to @chengler, whose charge-scheduler experiments (#151) led to this being spotted.
+
+## 2.7.0 — 2026-07-20
+
+### Added
+- **Elevation profile and outside temperature for every trip.** The Leapmotor cloud reports neither altitude nor an outside-temperature signal — only latitude/longitude and the cabin temperature. Mate now looks each finished trip's GPS track up against [Open-Meteo](https://open-meteo.com) (free, keyless, no account) shortly after the trip ends, and the trip detail gains three things: an **altitude line** on the *SoC & speed* chart — a topographic cross-section drawn under your telemetry — the trip's total **elevation gain and loss** (↑ climbed / ↓ descended), and the **outside temperature at the departure point and at the arrival point**. The temperature is deliberately *not* an average: it's read at each point's own place and hour, so a valley-to-pass climb shows the real drop instead of hiding it. Together these explain a good part of a trip's consumption — a climb costs energy, cold costs range. It runs quietly in the background (the same render-triggered sweep as the other post-trip enrichments), one lookup per trip; a trip whose lookup fails simply shows "—" and retries on the next sweep, up to a small ceiling, and trips recorded before this feature existed get a **Calculate elevation** button right on the page. Only the trip's GPS points ever leave the device, and the whole thing can be switched off in *Settings*. Elevation follows your measurement system (m / ft), and the chart's altitude line only appears on trips that have been enriched.
+
+### Credits
+- The elevation groundwork comes from **[@hubcasale](https://github.com/hubcasale)**'s work in PR #147: the post-trip enrichment sweep, the per-point altitude storage with read-time interpolation, the chart's third series and the recalculate button are his design. This release switches the lookup to **Open-Meteo** — ~300× the free quota of Open-Elevation, finer 90 m terrain data, and it can return the temperature in the same trip — and adds the outside temperature on top. Thank you 🙏
+
 ## 2.6.1 — 2026-07-18
 
 ### Fixed

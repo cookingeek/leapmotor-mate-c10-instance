@@ -3,6 +3,19 @@
 All notable changes to LeapMotor Mate are documented here.
 This project adheres to [Semantic Versioning](https://semver.org/).
 
+## 2.8.9 — 2026-07-24
+
+### Changed
+- **The altitude on the trip chart is a plain line again, like SoC and speed.** It was drawn as a filled area — a soft gradient when the profile arrived in 2.8.0, then a flat opaque slab in 2.8.3 — and the fill had become the loudest thing on the chart, a brown mass covering the two lines the chart exists to show. The terrain reads perfectly well as an outline, and it now has the same weight as the other two series, so the plot is about the drive again with the ground as context rather than the subject. Nothing else changes: the dashed segments across signal drop-outs stay, and so do the gain/loss figures. Raised by **@pdifeo** (#159).
+
+## 2.8.8 — 2026-07-24
+
+### Fixed
+- **Cars west of Greenwich are no longer moved out to sea by the Refresh button.** A B10 in Portugal appeared on the map off the coast of Sardinia, and went back there every time its owner refreshed. The cloud sends each coordinate twice — once with its sign, once as a bare magnitude — and Mate has two places that read it: the poller, which picks the signed pair and got this right, and the web, which keeps its own copy of that parsing for the write that follows a **command** or the **Refresh** button. That second copy read the magnitude, so the newest position was filed at *plus* 9.14° instead of *minus* 9.14°. Since the map shows the newest position, one refresh was enough to send the car to Italy. The stored history was never wrong — only the last row was — so nothing needs repairing: the next refresh puts the marker back. This is the same fault as the UK car plotted in the North Sea (#30), fixed then in the poller alone; nothing east of Greenwich could ever show it, which is why the second copy went unnoticed. It mirrored the **latitude** too, so cars in the southern hemisphere were thrown into the opposite one. Reported with a diagnostics bundle by **@Andreexylus** (#158).
+
+### Changed
+- **The diagnostics bundle now describes the shape of the GPS data, without any coordinates.** Every coordinate signal is stripped from a bundle to protect your address — but that also made the bug above invisible to triage, since nothing in the bundle could say whether a car even sends the signed pair. Bundles now list which coordinate signals arrive and which hemisphere Mate has learned, and no position. The `/api/debug/signals` endpoint — written specifically to diagnose this class of problem — was likewise not listing the signed signals at all, and now shows them alongside what Mate would actually store.
+
 ## 2.8.7 — 2026-07-24
 
 ### Fixed

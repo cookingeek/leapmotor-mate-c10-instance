@@ -3,6 +3,16 @@
 All notable changes to LeapMotor Mate are documented here.
 This project adheres to [Semantic Versioning](https://semver.org/).
 
+## 2.8.7 — 2026-07-24
+
+### Fixed
+- **"Fully charged" no longer appears while a range-extender is still charging.** A REEV can raise its own *charge complete* flag with the battery at 23 % and the limit set to 90 %, switching it on and off part-way through a charge — and Mate was repeating that faithfully, so the Overview and the Charges page announced a finished charge while the car was visibly filling. Mate now checks that claim against the battery before showing it: if the charge is nowhere near the point the car was told to stop at, the flag is ignored. It stays deliberately forgiving — a charge that stops a few percent short of the limit is still "complete" — and it only ever applies when Mate actually knows the limit, so a legitimate flag can't be suppressed for want of a reference. **Only range-extenders are affected**; fully-electric cars report this correctly and are left exactly as they are. Spotted by **@michapr** alongside the charge-detection issue in the same report.
+
+## 2.8.6 — 2026-07-24
+
+### Fixed
+- **A range-extender charging at home is finally recorded.** On a REEV, a home AC charge could go completely unlogged — no session at all, so the energy and cost simply never appeared. The reason is that these cars report neither of the two things Mate looks for: the cable state stays at "connected" instead of switching to "charging", and the pack current reads about a tenth of an amp instead of a real charge current. A tester's diagnostics settled it beyond doubt — across fifteen days the poller never once entered the charging state, while the battery visibly climbed the whole time. Mate now takes the climb itself as the evidence: **on a REEV, parked with the cable in and the battery genuinely rising, that's a charge**, whatever the cable and current claim. The rise is measured cumulatively from the moment you plug in rather than between two readings, because on these cars the battery moves one 0.1 % step at a time — which is also the sensor's own resolution, so comparing consecutive readings would either miss the charge or fire on noise. A charge that's merely *scheduled* and waiting for its slot, with the battery flat, still correctly does **not** open a session, and neither does driving on the generator. **Fully-electric cars are untouched** — the new path is gated strictly on the car reporting a fuel tank, so a BEV can never reach it. Thanks to **@michapr**, whose diagnostics and patient re-testing pinned this down.
+
 ## 2.8.5 — 2026-07-23
 
 ### Changed

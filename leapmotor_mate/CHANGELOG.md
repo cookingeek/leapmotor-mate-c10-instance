@@ -3,6 +3,19 @@
 All notable changes to LeapMotor Mate are documented here.
 This project adheres to [Semantic Versioning](https://semver.org/).
 
+## 2.13.3 — 2026-07-28
+
+### Added
+- **The Overview now tells you when what you're looking at isn't current.** "Last seen" is the age of Mate's last poll, and the cloud always answers — so when your car drops out of coverage it keeps handing back the last frame it received, and the screen says "13s ago" over a position and a battery reading from half an hour before. **@riri19** described that trap precisely. Mate has always known the car's own timestamp on each frame; it just never stored it. It does now, and when the data has fallen behind, the line grows a tail: *Last seen 13s ago · data 33m old*. It is deliberately quiet the rest of the time — it appears only when the car was **driving or charging** (a car asleep in a garage legitimately has hours-old data, and saying so every morning would be noise), and only when the data is genuinely behind Mate's own polling rather than both being old for the same reason.
+
+### Fixed
+- **"Last seen" now speaks your language.** It was English on every install — *13s ago* under an Italian, German, French, Polish or Portuguese label — on the Overview card and in the map popup. It had been standing alone long enough that nobody noticed; putting a translated phrase beside it made it obvious.
+
+## 2.13.2 — 2026-07-28
+
+### Fixed
+- **The car's picture no longer hammers your Leapmotor account when it can't be downloaded.** Mate keeps the image package on disk and serves it from there — but that short-circuit can only save a request once the download has succeeded at least once. On an install where it never had, every single refresh of the Overview went back to the cloud: two attempts, each resetting the session, every 30 seconds, for as long as the page stayed open. From the cloud's side that is a login storm, and it answers a login storm by refusing — **@arnolds77**'s log carried 42 session resets and 35 refusals in 45 minutes while he was trying to work out why his car had no data. Mate now tries once and waits before trying again; pressing refresh on the image still goes straight to the cloud, because that's you asking. The once-per-restart re-download that picks up a repainted car is unchanged. The picture is decoration — it had no business spending the session everything else depends on.
+
 ## 2.13.1 — 2026-07-28
 
 ### Fixed

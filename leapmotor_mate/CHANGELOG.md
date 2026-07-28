@@ -3,6 +3,32 @@
 All notable changes to LeapMotor Mate are documented here.
 This project adheres to [Semantic Versioning](https://semver.org/).
 
+## 2.13.1 — 2026-07-28
+
+### Fixed
+- **The correction v2.12.1 made to hand-entered charges now waits until you've chosen your time zone — and follows you if you change it.** Yesterday's fix converted those charges using whichever zone was configured the first time Mate started after the update. Installing first and picking your zone afterwards is the ordinary order of events, so an install could be converted as though it were on UTC and then consider the matter closed: **@ghuaywen-ai**'s charges were still eight hours out while Mate believed it had corrected them. Nothing is converted now until a zone has actually been chosen, and the zone used is remembered — set or change it later and the charges that pass converted are re-anchored to it, giving back the times you originally typed. Charges you entered *after* the conversion are deliberately left alone: moving to another country doesn't change when you plugged in.
+- If you updated to v2.12.1 without ever choosing a time zone, that conversion can't be undone automatically — v2.12.1 didn't record what it assumed. Choose your zone and any charge still shifted can be corrected by deleting it and importing your original file again, which now anchors correctly.
+
+### Added
+- **A month calendar for refuels, the same one the Charges page has.** Days you filled up carry their litres and how many stops, the month line totals litres and cost, and opening a day lists each refuel with its time, price per litre and the tank level before it. Asked for by **@gm27271** and seconded by **@michapr**; range-extender cars only, like the rest of the fuel section.
+
+## 2.13.0 — 2026-07-28
+
+### Added
+- **Your car's charge window, on the Overview.** Mate has known it for a long time, but only inside the Scheduling page — so at the one moment it answers a question, it wasn't there: cable plugged in, nothing happening, and no hint that charging simply starts at 22:05. It now shows as a chip under the car whenever the cable is in and nothing is flowing, which is exactly when you'd wonder. It never appears while the car is actually charging. From **@rop12770**, who sent the official app's own banner. The window is read from the car every half hour and cached, so the page that redraws itself every 30 seconds never costs you a request; changing it from Mate — the Scheduling page or a Home Assistant automation — updates the chip immediately.
+- **Two more drive modes to tag a trip with: ECO and Custom.** The Leapmotor cloud never reports which mode you drove in, so this is a label you attach by hand — and the three Mate offered didn't match any real car. **@adoewa** photographed his C10's own screen: ECO · Comfort · Sport · Custom, with no "normal" at all, while **@gm27271**'s range-extender shows Sport · Normal · Individual. One list now covers both, and every trip you have already tagged keeps its tag.
+
+### Fixed
+- **The day you open in the Trips calendar shows its own totals again.** Distance, ♻️ regen, cost and a distance-weighted efficiency — the same four the old year/month/day list carried on every level, and which quietly went missing when the calendar replaced it. **@ghuaywen-ai** noticed the regen figure was gone; it had been, since v2.9.0. The cost now closes the line, lining up with the month total right above it. Regen stays hidden on a range-extender, where a battery being refilled mid-drive can't be told apart from braking.
+
+## 2.12.1 — 2026-07-28
+
+### Fixed
+- **Charges you enter by hand are no longer pushed forward by your time zone.** A time you type is a time on *your* clock, but it was being stored with no zone attached — and everything Mate stores is UTC, so the page read it back as though you had typed a UTC time and added your offset on top. **@ghuaywen-ai** imported 150+ charges and found every one of them seven hours late. This was never only about the CSV: the *Add a charge* form on the Charges page did the same thing, quietly, for everyone outside UTC since the feature shipped. **Charges already in your database are corrected on the first start after updating** — each one with the offset that was in force on *its own* date, so a January charge and a July one are not moved by the same amount. If you had been compensating by hand, those entries will now show the time you actually meant, which may be an hour or two from where you left them.
+- **The charges file Mate exports can now be imported back into Mate.** The export is a full dump of what the database holds, so its first column is an internal id — and the importer, which read columns by position, tried to read that word as a date and rejected the file on its first line, then on every row after it. **@adoewa** hit exactly that after exporting his charges to keep them safe across an update. The importer now reads the header and matches columns by **name**, so it accepts both the template we hand out and Mate's own export; columns it doesn't recognise are ignored. Nothing was taken out of the export — it still carries the location, power and duration for anyone who opens it in a spreadsheet.
+- **A range-extender's cable code no longer looks like charging.** The cable reports a value while the car is *driving* that is not a connection at all. One of the two readers of that signal already knew to ignore it; the other didn't, and could open an empty charge session at the moment a stale speed reading lined up with it. Nothing was ever recorded — the empty session was discarded — but the two now agree. Found while going through **@ebagnoli**'s captures. Range-extender cars only.
+- **And the same signal's "still connected" state now means the same thing on both sides of Mate.** The poller has counted it since v2.8.4, when reading it as *unplugged* was shredding slow AC charges into fragments; the web half never got that change.
+
 ## 2.12.0 — 2026-07-27
 
 ### Added

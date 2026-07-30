@@ -3,6 +3,57 @@
 All notable changes to LeapMotor Mate are documented here.
 This project adheres to [Semantic Versioning](https://semver.org/).
 
+## 3.1.0 — 2026-07-30
+
+### Added
+- **The price behind a trip's cost is now on screen.** A trip is costed at the average price of the
+  energy in the battery when it started — every priced charge counted in proportion to the charge
+  it added, so a tank filled half at home and half at a fast charger sits somewhere between the two.
+  Mate has computed that rate since per-trip costs shipped and simply never printed it, which left
+  the € with no way to check it short of redoing the arithmetic. It now appears under the cost on a
+  trip, and under the battery on the Overview, where it is the rate your **next** trip will be
+  costed at. Hover either for what moves it: charging does, driving never does. Asked for by
+  **@riri19** (#200), whose description of the mechanism was exactly right.
+
+### Fixed
+- **The unit on *Best efficiency* was as large and as green as the number.** The `eff` filter hands
+  back value and unit as one string, so `18.5 kWh/100km` went into the tile as a single lump and the
+  unit inherited the number's size and colour — while *Avg consumption*, sitting right beside it,
+  already set its unit small and grey. Both now match. Spotted by **@adoewa** (#199).
+- **Two figures on a trip no longer sit at different heights.** Those cells are 130px wide, so
+  whether a label wraps depends on the language: *Energia consumata* takes two lines where *Consumo
+  medio* takes one, and the value below simply followed, leaving one number 18px lower than the one
+  next to it while the rows above and below lined up. Every label in that grid now reserves the same
+  two lines. The consumption unit is a step smaller there too — at the shared size `16.5 kWh/100km`
+  did not fit the column and the unit dropped onto its own line, the same orphaned look as above.
+
+## 3.0.0 — 2026-07-30
+
+> Nothing in this release breaks anything: no setting changes meaning, no data is migrated, and an
+> existing install updates in place as always.
+
+### Added
+- **Dutch — Mate now speaks seven languages.** The whole application: every page, the setup wizard,
+  the login screen and the maintenance schedule. It is not a partial translation to be finished
+  later — all 1117 strings are in, and a test now refuses any language that falls short of the
+  others. Choosing it: **Settings ▸ Language & Currency**, or the flag on the first setup screen,
+  which also picks Dutch by itself when the browser asks for it. Asked for by **@adoewa** (#187).
+  A handful of labels are shorter than the literal translation on purpose — *Km-stand*, *Stand*,
+  *Airco-doel* — because Dutch compounds are long and those three sit in fixed-width tiles where
+  the full word was cut off. Every page was checked at desktop and phone width before release.
+
+### Fixed
+- **The Maintenance page was in English for Polish users, and always had been.** That page keeps
+  its own dictionary inside `maintenance.py`, separate from the locale files, and Polish was never
+  added to it — the community translation (**@irek**, PR #90) covered the locale files, which is
+  where anyone would look. Nothing ever failed: a missing key falls back to English, silently, and
+  no test reached that file. All 62 service items, categories and phrases are now in Polish, and
+  the page title matches the sidebar the way it does in every other language.
+- **The trip count in Statistics read "trips" in every language.** The year and month rows had the
+  word hardcoded in the template, so Italian showed *58 trips* and German *58 trips*. Both rows now
+  use the same singular/plural handling as the Trips calendar — *58 viaggi*, *58 Fahrten*,
+  *58 ritten*, and *1 viaggio* when there is one.
+
 ## 2.19.3 — 2026-07-30
 
 ### Fixed

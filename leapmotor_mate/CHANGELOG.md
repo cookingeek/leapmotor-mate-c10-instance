@@ -3,6 +3,22 @@
 All notable changes to LeapMotor Mate are documented here.
 This project adheres to [Semantic Versioning](https://semver.org/).
 
+## 2.19.2 — 2026-07-30
+
+### Fixed
+- **One tank of fuel is one refuel again.** A float gauge does not jump to the final level — it climbs there in steps, and the car reports every one. Measured on **@pdifeo**'s C10 (beta #17): 70.2 → 78.0 → 87.0 → 98.1 → 100.0 % in twenty-eight seconds. Mate read those pairwise and filed each rise as its own refuel, so one fill-up showed up as **three**. It now follows the fill while the level keeps climbing and records it once, absorbing the small final step as well — that step is under the detection floor, and dropping it was costing nine tenths of a litre off every full tank. His fill reads 33.390 → 47.500 L, one row. Tuning the floor could never have fixed this: raise it and you still get three, lower it and you get four. **This affects every REEV owner, not only beta testers** — the Refuels page is in the public release. As a bonus his tank reads 47.500 L at 100 %, confirming the C10 capacity correction from v2.14.1 on a second car.
+
+### Changed
+- The comment describing when a charge session closes said it "only CLOSES when the cable is pulled". Measured on a real car over one night: when a load-balancing wallbox stops the current, the car reports the cable **gone** — so the session does close, and a single plug-in was recorded as six charges. Behaviour is unchanged; the comment now states what the data says, so the next reader does not inherit a false premise.
+
+## 2.19.1 — 2026-07-30
+
+### Added
+- **Home Assistant can now see how old the car's data really is.** Two new MQTT sensors: **Data Timestamp**, the clock the *car* put on the frame it last sent, and **Data Age**, the seconds since. The existing *Last Seen* is when **Mate** last wrote a row — it stays a few seconds old for as long as the cloud keeps answering, even when what the cloud is answering with is half an hour stale. That gap is the whole point: it is the difference between a car that is genuinely parked and a car that stopped reporting while it was moving. Both go out **without** the driving-or-charging condition the Overview applies, because an automation should apply its own. Empty rather than 1970 on a car that doesn't report its clock. Asked for by **@riri19** (#178).
+
+### Fixed
+- **The kilometres driven before the cloud caught up are no longer lost.** When a car sets off somewhere without coverage, the cloud keeps re-serving the last frame it holds — gear P, speed 0 — so Mate stayed parked through the opening kilometres and then opened the trip with the odometer read *after* them. Those kilometres, and the energy that moved them, were dropped: the odometer-jump reconstruction couldn't catch them either, because it hands over to the live trip in the same poll. The trip is now anchored to the last reading taken before it, so the distance and the consumption are right. Its start time and start point are deliberately left alone — when the car set off is unknown, and a frozen frame's GPS is routinely 0,0. Reported by **@riri19** (#130, #129). No effect at all where the cloud link is healthy: measured against 303 real trips, none was touched.
+
 ## 2.19.0 — 2026-07-30
 
 ### Added

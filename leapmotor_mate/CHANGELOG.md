@@ -3,6 +3,97 @@
 All notable changes to LeapMotor Mate are documented here.
 This project adheres to [Semantic Versioning](https://semver.org/).
 
+## 3.4.6 — 2026-08-01
+
+### Fixed
+- **A 72-second power-off is a power-off.** **@michapr** switched his car off between two drives and
+  Mate still reported them as sharing one power-on session — *"the car was never switched off"* —
+  and asked him to merge two trips that belong apart. Mate had seen the switch-off and thrown it
+  away: a `ready=0` gap shorter than 90 seconds was treated as a signal blip.
+
+  That 90 came from *"signal blips seen in the log"* and had never been measured. It has been now,
+  across eight diagnostic bundles from three owners: of **123 distinct power-offs in three weeks,
+  only three fall under 90 seconds** — 38.8 s, 72.0 s and 89.8 s — and the 72 s one is his real
+  switch-off. The blips the threshold was defending against amount to that single 38.8 s event. It
+  is now **60 seconds**, which still absorbs that one and stops swallowing the rest.
+
+  The same constant was quietly doing a second, unrelated job: the slack that lets a session still
+  be matched to the trip it belongs to, sized on the ~1 minute the gear-P trip-end lags behind
+  ready-off. Lowering both together would have left that slack exactly equal to the lag it exists to
+  cover, so the two questions now have two numbers. _(beta #19.)_
+
+## 3.4.5 — 2026-08-01
+
+### Added
+- **A stretch where the signal was lost now draws as a dashed bridge, not as a road you drove.**
+  Every map — the global Map, the report's month map, a trip's own map — joined the recorded GPS
+  fixes with a plain straight line, including across a real dropout: a tunnel, a dead zone, a cloud
+  hiccup. That line cuts through buildings and fields, and nothing distinguished *"the car really
+  drove this straight"* from *"we lost it here"*.
+
+  A jump much larger than **that trip's own** typical sampling interval (its median × 3, never under
+  a minute) is now its own two-point run, drawn thin, dashed and magenta, while every normal stretch
+  keeps the solid line it always had. The threshold being relative is the point: it follows whatever
+  polling cadence you have configured instead of assuming one. It is the same honesty the trip's
+  SoC/speed chart already applied to a hole in its data by leaving it blank rather than joining
+  across it. Verified against a real 322-trip history, where it found **nine such gaps across four
+  trips** and put the dashes exactly where the car had gone quiet. _(#209, by **@hubcasale**.)_
+- **"Trips shown" on the Map.** A long history leaves the map a solid mass of overlapping lines, so
+  the legend row gains a box capping it to the N most recently driven trips — and because the point
+  budget is then spent on fewer trips, each one that is drawn hugs the real road more closely.
+  **0 = every trip**, which is the behaviour you have today, so nothing changes until you set it.
+  _(#209.)_
+
+### Fixed
+- **A test that was named after a rule it never reached.** The one-minute floor under the gap
+  threshold is what stops an ordinary drive that misses a few polls from sprouting dashed bridges —
+  and removing it left the entire suite green, so nothing was holding it in place. The test named
+  for it exercised the multiplier instead, as its own description conceded. It now has a case that
+  fails when the floor goes, and the neighbouring one is named after what it really checks.
+
+## 3.4.4 — 2026-08-01
+
+### Fixed
+- **A charge the car drove away from is recorded again.** A charge session was closed in exactly one
+  place — when the car went from *charging* to *parked*. **@mikeeeeekoo** charged overnight on a
+  Tesla Wall Connector, the Leapmotor cloud then refused three logins in a row (*charging → offline*),
+  and an hour later the car turned up already on the road (*offline → driving*). Neither step matched
+  that one condition, so the session was never closed: his log has `Charge #3 started` and no
+  `Charge #3 ended` anywhere after it. An open charge is in no calendar and in no AC count, which is
+  exactly what he reported — a full 12 → 100 % charge that Mate appeared not to have seen. Nothing
+  was lost; the row was there all along, waiting for an end.
+
+  The guard was asymmetric: plugging in **does** close a trip in progress ("plug inserted while
+  driving"), but setting off did not close a charge in progress. It does now.
+
+  **Which reading it closes on matters more than it sounds.** Not the one where the car is driving:
+  his charge really ended at 100 %, and by the time Mate saw the car again it read 98.1 % — ten
+  kilometres of road, not two points that never went in. The end is taken from the last reading made
+  **while charging**, dated by the **car's own clock** rather than by when we happened to poll it:
+  while the car is out of touch the cloud keeps re-serving the last frame it holds, and that frame is
+  the last real measurement. On his night that is the difference between *06:10, 100 %* and *09:36,
+  98.1 %*. One exception, and it is a measurement rather than a guess: a car whose odometer has not
+  moved cannot have spent anything, so if it reappears **higher** than that last reading it kept
+  charging while we were blind, and the fresh reading wins.
+
+  The same rule now applies to a session found open at startup (crash recovery): it used to close on
+  the last position of *any* kind since the charge began, which for him would have been a whole
+  morning of driving — 12.8 → 92.3 %, ending at half past noon. So a charge already stuck open in
+  your database gets closed correctly by this update rather than badly. _(#208.)_
+
+### Changed
+- **The Features list on the README was rebuilt.** Thirty essay-length bullets became a grouped list
+  of one-line entries, and the two languages are now **verified to match, item by item**: they had
+  silently drifted apart, and the Italian half was missing **V2L monitoring**, the **battery-health
+  page** and **trip notes** entirely — three features an Italian reader could not learn Mate had.
+  While checking each claim against the code, the polling interval turned out to be documented wrong
+  in **both** languages: it reads *"configurable 10–30 s"*, and it is really **10 s to 10 minutes**
+  while parked and **10–60 s** while driving.
+- **MateDesktop is now mentioned.** It has been public since 26 July and appeared in no file of this
+  project: it joins the README as **Option C** (in both languages) and the Docker Hub page, with the
+  note that Windows ships inside a `.zip`. The Docker Hub page also claimed four interface languages;
+  there are **seven**.
+
 ## 3.4.3 — 2026-08-01
 
 ### Changed
@@ -10,9 +101,8 @@ This project adheres to [Semantic Versioning](https://semver.org/).
   Every page of the beta build carried a single instruction — *"do NOT open issues about
   inconsistent data"* — written to hold back a flood of *"my costs look wrong"* on a REEV, which is
   expected while REEV behaviour isn't integrated. It held back more than that. A tester found a
-  real defect — **one refuel filed three times**, in code that ships in the **public** build, so
-  every REEV owner was seeing it — and wrote it as an afterthought at the bottom of a report about
-  something else, because, in his words, *"it says all over the place not to report data
+  real defect — **one refuel filed three times** — and wrote it as an afterthought at the bottom of
+  a report about something else, because, in his words, *"it says all over the place not to report data
   inconsistencies"*.
 
   The banner now draws the line where it belongs. A figure that merely looks off still needs no
@@ -279,7 +369,7 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 ## 2.19.2 — 2026-07-30
 
 ### Fixed
-- **One tank of fuel is one refuel again.** A float gauge does not jump to the final level — it climbs there in steps, and the car reports every one. Measured on **@pdifeo**'s C10 (beta #17): 70.2 → 78.0 → 87.0 → 98.1 → 100.0 % in twenty-eight seconds. Mate read those pairwise and filed each rise as its own refuel, so one fill-up showed up as **three**. It now follows the fill while the level keeps climbing and records it once, absorbing the small final step as well — that step is under the detection floor, and dropping it was costing nine tenths of a litre off every full tank. His fill reads 33.390 → 47.500 L, one row. Tuning the floor could never have fixed this: raise it and you still get three, lower it and you get four. **This affects every REEV owner, not only beta testers** — the Refuels page is in the public release. As a bonus his tank reads 47.500 L at 100 %, confirming the C10 capacity correction from v2.14.1 on a second car.
+- **One tank of fuel is one refuel again.** A float gauge does not jump to the final level — it climbs there in steps, and the car reports every one. Measured on **@pdifeo**'s C10 (beta #17): 70.2 → 78.0 → 87.0 → 98.1 → 100.0 % in twenty-eight seconds. Mate read those pairwise and filed each rise as its own refuel, so one fill-up showed up as **three**. It now follows the fill while the level keeps climbing and records it once, absorbing the small final step as well — that step is under the detection floor, and dropping it was costing nine tenths of a litre off every full tank. His fill reads 33.390 → 47.500 L, one row. Tuning the floor could never have fixed this: raise it and you still get three, lower it and you get four. **This reached the beta testers running a range-extender** — the Refuels page needs both a REEV and the BetaTester build. _(Corrected 2026-08-01: this entry first claimed the page ships publicly and that every REEV owner was affected. It does not and they were not — the gate has been in place since 2026-07-13. The defect and the fix are unchanged; only their reach was overstated.)_ As a bonus his tank reads 47.500 L at 100 %, confirming the C10 capacity correction from v2.14.1 on a second car.
 
 ### Changed
 - The comment describing when a charge session closes said it "only CLOSES when the cable is pulled". Measured on a real car over one night: when a load-balancing wallbox stops the current, the car reports the cable **gone** — so the session does close, and a single plug-in was recorded as six charges. Behaviour is unchanged; the comment now states what the data says, so the next reader does not inherit a false premise.

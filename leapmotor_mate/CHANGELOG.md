@@ -3,6 +3,72 @@
 All notable changes to LeapMotor Mate are documented here.
 This project adheres to [Semantic Versioning](https://semver.org/).
 
+## 3.4.8 — 2026-08-01
+
+### Changed
+- **Battery health stops counting the BMS re-anchoring as energy.** **@riri19** has a nine-month-old
+  B10 Max LFP reading **94.9 %** and said the figure was being dragged down by one charge with a
+  small SoC rise. He was right, and the same charge sat in the maintainer's own history: a 12.9-point
+  top-up ending at 100 % that estimated the pack at **57.7 kWh** where every other charge said 64-67.
+
+  The cause is not the SoC being "noisy". An LFP's voltage curve is flat across the middle of its
+  range, so the BMS counts coulombs and drifts; near the top the curve finally rises and it
+  **re-anchors** — adding SoC points that no energy paid for. Dividing measured energy by a delta
+  containing them under-states the pack, and worst on a short top-up where they are most of the
+  delta.
+
+  So the estimate now **stops at 95 %** instead of discarding those charges: a charge to 100 % is
+  the one that re-calibrates the pack and belongs in the history, only its last few points leave the
+  arithmetic. On the maintainer's 24-charge history every full charge rises — 64.5 → 66.9, 64.2 →
+  65.6, 63.8 → 65.7 — while charges that never reach 95 % do not move at all, and the scatter across
+  all of them falls from **2.39 to 0.67 kWh**.
+
+- **The headline pools the charges instead of averaging their ratios.** It used to weight a charge
+  by where it *ended*, so a 13-point top-up to 100 % counted as much as a 57-point charge. It now
+  sums the energy and the SoC covered across a window measured in **SoC points** rather than in
+  number of charges, so a charge counts in proportion to how much of the scale it actually spanned —
+  riri19's own suggestion — and nothing is discarded to achieve it. The figure moves by **0.12 kWh**
+  on a new charge where it used to move by 0.67.
+
+- **The number no longer pretends to be a measurement.** Battery health now shows its own **scatter**
+  next to it — *98.2 % ± 0.8* rather than a bare *93.6 %* — because the divisor is still a SoC the
+  BMS counted, and removing a known systematic error makes the figure steadier, not true. A single
+  charge shows no ±: printing *± 0.0* would be the false precision riri19 asked us to stop giving.
+  _(#205.)_
+
+## 3.4.7 — 2026-08-01
+
+### Fixed
+- **A charge left open no longer closes on the NEXT charge.** v3.4.4 taught the crash-recovery path
+  to close an open session on the last reading taken *while charging* rather than on whatever the
+  car was doing when Mate noticed. That search had no upper bound whenever no later charge row
+  existed to stop it — so it walked forward through everything. **@mikeeeeekoo** updated Mate in
+  the evening, the recovery ran, and his overnight charge closed on the **first sample of that
+  evening's plug-in**: 17:10, 80.7 %, seventeen hours long, for a charge that had really ended at
+  06:10 at 100 %. The previous behaviour was wrong too — it took the last position of any kind, a
+  whole morning of driving — so this is a defect introduced by its own fix, and it found the one
+  person who had reported the original.
+
+  A charge now ends where its own **contiguous** run of charging samples ends: the first reading
+  that says the car is not charging closes it, whatever happens hours later. A bound on continuity,
+  not on time, because that is what "this session" means. His night replays as
+  **00:06 → 06:10, 12.8 → 100 %, 61.0 kWh** — the figures his own app shows. A session still stuck
+  open in your database is closed correctly the next time the poller starts. _(#208.)_
+
+### Added
+- **Refuels can write down where you filled up.** The 🧭 button that trips and charges already had
+  is now on each refuel: it takes where the car was standing at that moment, turns it into a street
+  address and puts it in the note — so the pump identifies itself instead of being typed in. Asked
+  for by **@gm27271**: *"then users do not need to enter any notes, it will autodetect where the gas
+  was added"*.
+
+  One limit is built in deliberately. A refuel's timestamp is not always when the fuel went in: on
+  one Mate spotted by itself it is when the **new level was first seen**, which for someone who
+  fills up and drives home is the next time the car woke. So the address is only written when the
+  car actually reported a position within twenty minutes of it — otherwise the note is left empty,
+  because naming the wrong forecourt is worse than naming none. Range-extender cars only.
+  _(beta discussion #14.)_
+
 ## 3.4.6 — 2026-08-01
 
 ### Fixed

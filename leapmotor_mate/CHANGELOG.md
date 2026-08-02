@@ -3,6 +3,116 @@
 All notable changes to LeapMotor Mate are documented here.
 This project adheres to [Semantic Versioning](https://semver.org/).
 
+## 3.5.2 — 2026-08-02
+
+### Changed
+- **The access password is typed twice.** Raised by **@rop12770** (#214), who set one in
+  Settings → Access, gets in from his PC, and is told it's wrong on his phone.
+
+  With a single box a typo is hashed in silence — and the machine you set it on **keeps working**,
+  because the browser saved what you actually typed. The mistake only surfaces on the next device,
+  by which time there is no way left to know which key you pressed. The password isn't readable
+  anywhere afterwards, by design: what's stored is a salted hash.
+
+  Both forms now ask for it twice — the one that turns protection on and the one that changes it —
+  and refuse to save unless the two agree. The check runs in the browser through its own constraint
+  validation, so an htmx form simply doesn't fire while they differ, **and** on the server, because
+  a form attribute is a convenience rather than a guarantee.
+
+  Each box also has its own **👁 reveal button**, like the setup wizard has always had. One per box
+  rather than one for both: the pair exists so you can compare them, and uncovering only the one you
+  doubt is the smaller exposure. It re-hides itself as soon as you leave the field, so a revealed
+  password can't be left sitting on a shared screen.
+
+- **And the card now says how to get back in.** Losing it does **not** lock you out for good, but
+  nothing said so anywhere: the *New password* box never asks for the old one, so from any device
+  still signed in you can just set a new one, and `MATE_AUTH_PASSWORD` overrides whatever is stored
+  if no device is. That is now written where you set the password, and in all four manuals.
+
+### Documentation
+- The four user manuals gained the **🔐 Access** card, which none of them described: what it
+  protects, why it is typed twice, and the two ways back in. Their version stamps are current again.
+
+### Internal
+- **The template guards for this card live where CI can run them.** The endpoint tests import
+  `web/main.py` and therefore FastAPI, which CI doesn't install, so that whole file skips there —
+  and a guard that only runs on one laptop guards nothing. The checks that merely read
+  `settings.html` were split into their own file with no such import. The same mistake cost a
+  release the day before; this time it was caught by running the suite the way CI runs it, before
+  publishing rather than after.
+- One of those guards exists because the reveal button was first written with its two icons inside
+  `data-` attributes. An `<svg>` in an attribute ends the attribute on its own first quote: the
+  browser then parses the rest of the tag as text and the **entire card renders as an empty box** —
+  no console error, no failing test, nothing in the logs. Jinja's `|e` doesn't help, since a macro's
+  output is already Markup. It was found by looking at the page; the guard now scans every template
+  for markup inside an attribute value.
+
+## 3.5.1 — 2026-08-02
+
+### Fixed
+- **The test suite runs again on CI.** v3.5.0's new tests for the cloud-total guard imported
+  `web/main.py`, which pulls in FastAPI — absent from the minimal environment CI installs, so the
+  run died at collection. Nothing shipped to anyone was affected: the Docker images were built from
+  the same commit and the app itself never imports differently.
+
+  The guard has moved from `main.py` to `db_reader.py`, beside `get_trip_totals_between`, which is
+  where the data it compares already comes from. The other FastAPI-dependent tests guard themselves
+  with `importorskip`, which would have **skipped these exactly where they matter most**; moving the
+  function lets them run everywhere instead. Verified with FastAPI deliberately blocked.
+
+## 3.5.0 — 2026-08-02
+
+### Changed
+- **Numbers are written the way your language writes them.** Until now `money` and the €/kWh price
+  followed the interface language and nothing else did, so an Italian Monthly Report showed a cost of
+  **38,74 €** on the same row as an energy of **110.3 kWh** and a price of **0,250 €/kWh** — the same
+  page writing the same kind of number three different ways. One rule now sits under every displayed
+  figure: the decimal separator is the comma in Italian, French, German, Dutch, Polish and Portuguese,
+  and stays the dot in English.
+
+  This is the most visible change in the release: it touches every screen. Nothing is rounded
+  differently and no value moves — only the mark between the units and the decimals.
+
+  Three places deliberately keep the dot, and it is worth knowing why: the width of a coloured bar,
+  anything inside a chart, and the three live readouts beside the Advanced-settings sliders, which
+  JavaScript rewrites from the slider itself the moment you touch it. A comma in the first two is a
+  syntax error rather than a separator — the bar would silently collapse to nothing — and in the
+  third it would flip to a dot under your finger.
+
+### Fixed
+- **The Monthly Report opens on the month you are in.** It used to open on the newest month that had
+  any data, so on the 2nd of August, with nothing driven yet, it showed **July** — July's real
+  numbers, under this month's page, with only the small header saying so. The current month now
+  always exists: empty, it says *"nothing this month yet"* instead of a page of zeros, and it shows
+  no comparison against last month, because every tile would read −100 % and that describes the
+  calendar rather than the driving.
+- **The report stops trusting a monthly total that is missing drives.** Reported by **@riri19**
+  (#212), whose Trips page and Monthly Report disagreed by a quarter about the same three drives:
+  16.4 kWh/100 km against 12.3, over the same 221 km.
+
+  Neither figure was miscalculated — they come from **different places**. A trip takes the car's
+  official energy when the cloud has a usable one and falls back to the battery-percentage estimate
+  when it doesn't; the report's two tiles took the car's official **monthly** total whole, with no
+  fallback and no check.
+
+  That total is only as complete as the car's uplink. On his own log the car was reading a stale
+  cloud frame on **59 %** of its polls while driving — and, on the afternoon in question, **8.9 %**
+  of the time during the drive whose energy the cloud got right against **75.1 %** during the one it
+  lost entirely. The drive the cloud missed is the drive the car couldn't reach it.
+
+  So the same reasoning the per-trip path already used now applies to the period: when the car's
+  total comes back far below what Mate's own trips add up to for the same window, Mate shows **its
+  own figure** and says so under the tile. The Guida / A·C / Altro split stays the car's own — that
+  breakdown exists nowhere else — with a line noting it covers only what reached the cloud. The
+  threshold was measured rather than picked: three months of a well-connected car put the cloud at
+  0.895, 1.032 and 0.982 of the local sum, and his broken month at 0.747. Only the low side is
+  guarded; a total **above** the local sum is normal, since it carries climate and standby energy
+  that no trip is charged with.
+
+### Documentation
+- The four user manuals and the README's Features list describe both report changes: where *Average
+  consumption* and *Energy used* come from, and when Mate overrules the car's own total.
+
 ## 3.4.10 — 2026-08-02
 
 ### Fixed

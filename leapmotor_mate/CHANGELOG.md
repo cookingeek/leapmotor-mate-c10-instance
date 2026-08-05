@@ -3,6 +3,64 @@
 All notable changes to LeapMotor Mate are documented here.
 This project adheres to [Semantic Versioning](https://semver.org/).
 
+## 3.8.1 — 2026-08-05
+
+### Fixed
+- 🔴 **A range-extender's day and month showed the electric half of the bill.** @michapr's 28 July
+  read **129 km · 8.3 L · 0.08 €**, and his July strip **416 km · 9.6 L · 9.02 €** against the ~33 €
+  he worked out by hand (beta #11).
+
+  The totals folded `cost`, which is the **electric** line by design — the petrol has a field of its
+  own so every existing reader keeps the meaning it had. And a generator trip carries no efficiency,
+  so it has no electric cost at all: the tank emptied into a total that never saw it. The trip
+  detail page had the whole figure and nothing else did.
+
+  Nothing about this was new. What changed is that we put the LITRES next to it in v3.6.9 — "8.3 L"
+  beside "0.08 €" is unreadable in a way that "0.08 €" alone never was. The defect did not appear,
+  it became visible.
+
+  The trips the calendar folds now carry the **fuel cost** too, priced exactly as the detail page
+  prices it: litres × the tank's blended €/L at the trip's start, with the rate timeline built once
+  per query rather than replayed per trip. A BEV is untouched — there is no fuel cost there to add.
+
+- **The month strip and the day header divided their two "per 100 km" figures by different
+  distances.** The consumption pill is the efficiency the car MEASURED, and Mate stores none for a
+  generator trip — so it covered the battery-driven part of the window while the litres beside it
+  covered all of it. Fixed in the Trips header in v3.7.0 and left in these two; @michapr found both
+  within two hours (beta #24 → beta #11). On a range-extender all three now divide by the same
+  kilometres, from the same SoC-based rule the Statistics page uses, so the pages cannot disagree.
+  A BEV keeps the measured efficiency everywhere.
+
+## 3.8.0 — 2026-08-05
+
+### Added
+- **Change the car's PIN without unlinking the account.** *Settings → Vehicle*, under the account
+  address: **Operation PIN**, typed twice with an eye to read it back. Until now the PIN was written
+  in exactly two places — the setup wizard saved it and Logout cleared it — so four digits changed
+  on the car meant signing out of the Leapmotor account and walking the whole wizard again. Nothing
+  was lost doing that (history is keyed by VIN), but Logout is a frightening button to press for a
+  typo. Asked for by **@alextchao** (#225).
+
+  Typed twice for the same reason as the access password (#214): a PIN stored with a typo does not
+  fail here, it fails **at the car**, later, with an error that names no digit. It takes effect at
+  once for both processes — the web command session is dropped so the next command re-authenticates,
+  and the poller already restarts itself when the stored login changes.
+
+### Fixed
+- 🔴 **Switching the wallbox OFF now switches it off.** The toggle in Settings hid the wallbox page,
+  the session-energy line and the chart overlay — and stopped there. `get_live()` never looked at
+  it, and neither did the poller, whose only gate asks *where* a charge happened, never *whether the
+  feature is on*. So with the toggle off and a mapping still saved, every poll kept reading the
+  meter into `ac_energy_kwh`.
+
+  That is not a display detail: a home charge is **billed** on that column whenever it is set, it
+  becomes the charge's energy everywhere, and the card prints "🔌 wallbox (billed)". An owner who
+  turned the feature off went on being charged at a meter he had switched away from.
+
+  The gate now sits in the one place both processes read through. Off means there is no wallbox
+  data, for anybody — and the saved mapping is left untouched, so switching back on needs no
+  remapping.
+
 ## 3.7.0 — 2026-08-05
 
 ### Added

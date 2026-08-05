@@ -3,6 +3,83 @@
 All notable changes to LeapMotor Mate are documented here.
 This project adheres to [Semantic Versioning](https://semver.org/).
 
+## 3.7.0 — 2026-08-05
+
+### Added
+- **What 100 km actually cost you.** A new card on the Statistics page: **every euro spent, divided
+  by every kilometre driven**. No price per kWh is computed and none is shown — the euros are added
+  up and divided by the distance, so the electricity that moved the car nowhere (climate,
+  preconditioning, the on-board charger's own losses) is in there too. On a range-extender the
+  petrol is added beside the electricity, and the split says which is which.
+
+  It follows your units — with miles it becomes *per 100 mi*, and the number grows, because
+  100 miles are 160.9 km. Anything Mate was not told about is named underneath rather than guessed
+  at: an untagged charge takes kilometres out of nothing and puts euros nowhere, so the figure can
+  only ever come out **low**, and the card says how many are missing.
+
+  **Written by @michapr.** He built the range-extender half on his own fork on 30 July and never
+  offered it as a pull request. His version priced the *consumption*; Silvio's call was that a cost
+  is the whole cost, so this one divides money by distance instead. Then he asked for the same card
+  on a plain BEV, which is why it is one function serving both cars.
+
+- **The Statistics page says how far back it goes.** A line under the title: *data recorded by Mate
+  since &lt;date&gt; — not the car's own total*. Not one figure on that page is the car's lifetime
+  counter, and the page never shows that counter anywhere: on a car reading 4803 km with 1877
+  recorded, a card headed **Total distance** invites exactly the wrong reading. Said once, for the
+  whole page, instead of defending each card from the same misunderstanding.
+
+### Fixed
+- 🔴 **A merged trip's petrol vanished from the period card.** Joining two trips writes
+  `merged_into_id` and **nothing else** — the child keeps the tank readings it was recorded with.
+  `get_fuel_totals_between`, behind *Energy by date range*, was the only fuel total in Mate
+  filtering those children out, while the distance beside it never did. So the litres came up short
+  and the kilometres did not, and the L/100 km divided one by the other.
+
+  On **@michapr**'s B10 (beta #23) his 28 July 07:56 trip was merged into the 2 km hop before it and
+  carried **3.7 of his 9.6 L**: the card read **5.9**, through four rounds of me looking in the
+  wrong place. It is the second half of his #20 — on 31 July I fixed how a merged group *reads* its
+  fuel and left the period query filtering the child away. One rule, two places, one corrected.
+
+- **A range-extender's two "per 100 km" figures divided by different distances.** In the Trips
+  header the consumption tile is the efficiency *measured by the car*, and Mate stores none for a
+  generator trip — so it covered only the battery-driven part of the window while the litres beside
+  it covered all of it. On a range-extender that tile now uses the same kilometres as the fuel tile
+  next to it; a BEV keeps the measured figure, and so does the Statistics page, where it is labelled
+  with the distance it covers. Reported by **@michapr** (beta #24).
+
+  Side effect worth knowing: on a car driven mostly by the generator that tile used to read **—**,
+  because none of those trips has an efficiency to average.
+
+## 3.6.9 — 2026-08-05
+
+### Fixed
+- 🔴 **The charger's-own-kWh pencil disappeared from the day drawer and the search results.**
+  Introduced in v3.6.7: the flag that decides whether to offer the field was passed through the
+  shared page context, and the charge card is **also** rendered by two partials that build their
+  context by hand. It survived on the Charges page and vanished exactly where you actually look at
+  a charge. **@ghuaywen-ai**, who asked for the field, watched it go between v3.6.6 and v3.6.8.
+
+  It is a template global now, not a route variable — no route can forget it, including one written
+  tomorrow.
+
+- **A range-extender's fuel was missing from the day header on the Trips page.** The month strip and
+  the page header got it in v3.6.8; a day's own line was the third place those trips are added up,
+  and it already carried the litres — they simply were not printed. Reported for the third time by
+  **@michapr** (BetaTester #11), which is twice more than should have been needed.
+
+- **The manuals promised a Log out that is not always there.** All four said the menu holds
+  **⚙️ Settings** and **🚪 Log out**, without saying the second one appears *only when an access
+  password is set* — and that it ends the password session, not your Leapmotor account. Unlinking
+  the account is a different button, in **Settings → Vehicle**. **@JoseRMorales** (#223) went
+  looking for the first and wanted the second. Both are now described, and distinguished.
+
+### Changed
+- **The average consumption says why, not just how much.** On a range-extender the note under it now
+  reads *"over battery-only kilometres: 273 km"* — @michapr's own wording, because a figure that
+  explains itself is remembered. On a full-electric car the missing kilometres are simply trips with
+  no consumption figure, so the plain wording stays there: one label true in both places does not
+  exist.
+
 ## 3.6.8 — 2026-08-04
 
 ### Fixed

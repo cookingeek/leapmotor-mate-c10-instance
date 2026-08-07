@@ -3,6 +3,209 @@
 All notable changes to LeapMotor Mate are documented here.
 This project adheres to [Semantic Versioning](https://semver.org/).
 
+## 3.8.6 — 2026-08-07
+
+**A car that kept ending up in the sea, and a charge type that only ever spoke English.**
+
+### Fixed
+
+- 🧭 **GPS: your car stays where it is on the map.** @rop12770 (#232) is in Portugal and his C10 was
+  plotted in the sea west of Sardinia — latitude right, longitude mirrored, and a marker **22
+  seconds old**, so nothing to do with old history.
+
+  That resolver had not changed since **v2.8.8**, so no update moved it. Reading it again found the
+  hole the comment beside it denies:
+
+  > *The memory is only ever written by a signed read, never by the fallback, so it can't be
+  > polluted.*
+
+  True only while the *signed* signal is actually signed. The cloud sends the coordinates twice —
+  once carrying its sign, once as a bare magnitude — and Mate believed the signed slot whenever it
+  was non-zero, with **no sanity check at all**. A single frame arriving there without its minus
+  teaches the wrong hemisphere; the poller then writes that conclusion to the database, so it
+  survives the restart and both readers mirror the car from then on. The guard built to survive a
+  *missing* sign had no defence against a *wrong* one.
+
+  🔑 The physics it was missing: **a car cannot teleport across the line.** Driving to the other
+  side means passing through zero, so a real crossing is always seen near the meridian — while a
+  dropped sign shows up at full magnitude, 8.6° W becoming 8.6° E, 1720 km between two polls.
+
+  So a remembered hemisphere now changes only on evidence: **at once within 1°** of the line, where
+  crossing is ordinary, and otherwise only after **ten consecutive polls** say the same thing. One
+  good frame in between resets the count, so a cloud that flickers never accumulates. A car
+  genuinely shipped across the meridian with its SIM dark re-registers within minutes of coming
+  back; a glitch never gets there.
+
+  🔑 And the guard is **one-directional**, because it has to be: a lost sign can only ever surface
+  as a *positive* number — the signals it gets confused with are magnitudes, with no minus to lose.
+  A negative reading is therefore proof, not suspicion, and passes straight through. Doubting it
+  would have stranded any car moving west or south for ten polls and bought nothing.
+
+  The poller now says so in its own log, **with no coordinate in the line** — that log ships inside
+  the diagnostics bundle, which exists to be attached in public.
+
+  ⚠️ What this does **not** do: repair an install whose remembered sign has already flipped. That
+  one heals on the first properly signed frame the cloud sends. #232 stays open until its bundle
+  arrives — the guard closes the way in, it does not yet prove it was the way used.
+
+- 🌍 **The charge type now reads in your own language.** @konrad300 (#210) opened Mate in Polish
+  and found the Costs page, the charge badge, the type dropdown and the search filter all saying
+  **"Home"** — while the monthly report, on the same screen, called the same thing **"Dom"**.
+
+  The comment sitting above those labels was the part that was wrong:
+
+  > *Labels are intentionally language-neutral (international loanwords + universal electrical
+  > acronyms) so they never need translating across UI languages.*
+
+  **AC, DC and HPC are acronyms and stay.** *Home*, *FREE* and *Manual* are ordinary English words,
+  and the app was not only contradicting its own report — it was contradicting **its own manual**,
+  which has said *Casa*, *Domicile* and *Zuhause* in three languages all along.
+
+  🔑 Two of the three words already existed, translated by native speakers, and are reused rather
+  than duplicated: `report_home` — the monthly report's own *Dom*, the very word that exposed the
+  contradiction — and `charge_free`. Only *Manual* needed adding, in all seven languages.
+
+  ⚠️ **Three copies, in three languages**: a Python dict, a Jinja tuple, and a JavaScript object in
+  the same page. A fix that caught only the one he reported would have been the same defect
+  returning on a different screen. Translated at the source, so the nine routes that hand the types
+  to a template needed no change and cannot drift apart later.
+
+  We answered *"PR very welcome, please go ahead"* and left him the map of the keys to reuse. Six
+  days on it had not arrived, so it is done here — with the thanks it deserves for a report precise
+  enough to be actioned without a single question back.
+
+### Changed
+
+- The four user manuals stopped declaring **v3.6.0**. Their contents have been updated with every
+  release since; only the line at the top saying which version they describe had been left behind —
+  which is the exact defect the rule about shipping documentation was written to prevent.
+
+## 3.8.5 — 2026-08-06
+
+**A diagnostics release: it changes nothing you look at, and a great deal about what can be
+answered when something goes wrong.**
+
+@adoewa (#230) charged from 49.8 % to 90.0 % over three and a quarter hours and Mate opened no
+session. His bundle could prove the car was **online** the whole time — 185 polls carrying 185
+different frames, two seconds old, against the 477 polls earlier the same night that all carried
+**one** frame aged up to nine hours — and it could prove the charge happened. It could not say
+**why** nothing opened, because the three signals that decide it were nowhere to be found: they live
+in the database, one row per poll, and the bundle carried them as a single snapshot taken ten hours
+after the cable came out.
+
+Measured before changing anything, across every bundle we hold — 7 bundles, 5 cars, 88 car-days:
+**35 charges taken while parked, 34 recorded, 1 lost.** So this is not a fix for something that
+bites everyone. It is the diagnostics carrying enough that the next one is answerable at all,
+whoever it happens to.
+
+**And then he found it himself, in his own Settings, while we were reading his logs**: *"I
+discovered that the Charge detection was on 14.5 A. Previous I have set this to 2A."* Below that
+floor Mate does not call it charging — and a home AC charge moves the pack at **11-12 A**, so
+anything above ~11 A hides **every** home charge, silently, with the car perfectly online. It
+explains all of it: why his 28-29 July charges were recorded (the floor was still 2), and why he is
+one case in 35.
+
+The bundle reported the vampire-drain thresholds and **not that one**. It does now.
+
+### Fixed
+- 🔴 **The cost card was billing petrol that is still in the tank.** @michapr (beta #25) said the
+  card "looks wrong"; asked which number, he pointed at **27.72 €/100 km**, of which **24.18 €** was
+  fuel. Measured on the trips in his own bundle:
+
+  | | |
+  |---|---|
+  | 9.60 L burned over 6 generator trips, 479 km | |
+  | what **Mate itself** charges those trips | **18.54 €** = 3.87 €/100 km = **1.93 €/L** |
+  | what the **card** charged | **116 €** = 24.18 €/100 km = **12.06 €/L** |
+
+  1.93 €/L is a pump price; 12.06 is not. The card summed `fuel_purchases.total_cost` — every euro
+  of every refuel — while ~50 of the ~60 litres he had bought were still in the tank, waiting to
+  move the car on kilometres this window has never seen.
+
+  Everywhere else Mate multiplies **litres burned × a blended €/L**, the lookup written for this
+  same tester on beta #11. So the Trips page said that petrol cost 18.54 € while the Statistics card
+  said 116 €: two numbers under one word, same program, same period, same car. The card now uses the
+  same figure. Two existing tests had to be corrected — they asserted the old behaviour, and were
+  asserting the defect.
+
+  ⚠️ `reev_actual_spend` still sums the purchases and is **right** to: that card answers "what did
+  you buy", and a tank is paid for whether or not it has been burned. Two cards, two questions.
+
+### Changed
+- **On a range-extender the trip's fuel sits in the header**, beside the kWh — which is what a car
+  with no tank already does with its one energy figure (@michapr, beta #27). Looking at the rendered
+  page made his point sharper than his words: the header showed **12.4** as AVG CONSUMPTION and
+  **12.4 kWh** as ENERGY USED, and the amber "Dual energy" box underneath opened with **12.4 kWh**
+  again — the same number three times in one column, the third framed as a warning, for something
+  that happens on every generator trip.
+
+  The litres moved up, the block stopped repeating the electric figure, and it lost the amber border
+  and the title: it was never a warning, it is the detail. **Nothing was dropped** — where the
+  battery and the tank started and ended, how much of the electricity was paid for at a plug against
+  how much the generator supplied, how far the generator drove, and what the electric number does
+  and does not measure all still live there, because they live nowhere else.
+
+- 🔴 **The nine sliders that change how Mate behaves no longer save the moment you let go.** Each
+  sat inside a form with `hx-trigger="change"`, and a range input fires `change` on thumb-release —
+  so a stray touch, or a finger dragging across one while scrolling a phone, wrote the new value
+  immediately, with no confirmation and no trace. Among them: the charge-detection floor and the
+  poll cadence, which are exactly the two @adoewa found moved.
+
+  They now need a **Save** press, like the data-retention card already did. The slider still moves
+  freely; nothing is written until you say so.
+
+- **And every change to one of them is written down** — when, from what, to what. Not the language,
+  not the currency, never a secret: only the ten settings that silently change what gets recorded.
+  Saving a form that changed nothing records nothing, so the trail stays readable.
+
+### Added
+- **The behaviour settings are in the bundle**, with their defaults, the ones that differ marked,
+  and the recorded changes underneath:
+
+  ```
+  10 behaviour settings · ⚠ 1 NOT at default
+    ⚠ poll_driving   60   (default 10)
+    changes recorded (1, newest first):
+      2026-08-06T15:44  charge_detect_min_a: 14.5 → 2.0
+  ```
+
+  ⚠️ Two of those defaults were written wrong on the first pass — `soh_temp_min_c` as 10 against a
+  real 15, `map_station_min_sessions` as 2 against a real 1 — which would have marked an untouched
+  install as modified, the exact question the section exists to answer. They are now checked against
+  the settings page itself, all ten of them, not one by hand.
+
+- **The charge-detection floor is on the bundle's first page**, beside the poll cadence, with what
+  it means: `Charge detect: min 14.5 A (default 2.0 — above ~11 A a home charge is never seen)`.
+  The setting that decides whether a charge is seen at all was the one thing triage could not read.
+
+- **The poller's log line says what it saw about charging**: whether the cable declared itself,
+  whether Mate concluded it was charging, and the pack current. Three fields, ~20 bytes a line, on
+  every poll. Nothing new is collected — the poller already held all three and simply never wrote
+  them down. #230's line would have read `plug=0 chg=0 A=0.0` for 202 consecutive polls, and the
+  question would have been closed in a minute instead of half an hour.
+
+- **The bundle carries the charges and the trips themselves**, from the database, for the last
+  15 days — the rows, not figures computed from them. Until now every "this trip is wrong" report
+  was answered by reading 30 000 log lines and inferring what the table must contain.
+  Charges keep a floor of 10 rows (charging weekly gives two in a fortnight); trips are capped at
+  200 **and the file says so when it truncates** — a silently shortened list reads as "this is
+  everything", which is how a correct file produces a wrong conclusion.
+
+- **…and a section that lists every time the battery filled up while parked**, with what Mate could
+  see at that moment: the cable, the decision, the current, and — the line the whole investigation
+  turned on — whether the frames were arriving fresh or the cloud was repeating one old reading.
+  It reads data **already recorded**, so it answers about the past without waiting for a recurrence.
+  Charges that WERE recorded are listed beside the missed ones: a flagged line with no control group
+  next to it is a coincidence, not a finding.
+
+  ⚠️ Where `frame_ts` predates its own column the count says so rather than reporting "1 distinct
+  frame" — on a real database 25 761 rows of 207 287 carry it, and the naive count called fifteen
+  hours of perfect charging a dead zone. Absent is not repeated.
+
+- Nothing locating anybody: no coordinates, no geohashes, no charge location name or URL, and none
+  of the free-text notes a user may have put an address or a plate in. The header's promise of
+  "GPS removed" stays true.
+
 ## 3.8.4 — 2026-08-06
 
 ### Fixed

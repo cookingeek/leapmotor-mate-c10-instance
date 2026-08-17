@@ -3,6 +3,51 @@
 All notable changes to LeapMotor Mate are documented here.
 This project adheres to [Semantic Versioning](https://semver.org/).
 
+## 3.14.4 — 2026-08-17
+
+**And the command is now SHAPED for the car you picked, not just addressed to it** (#253,
+@cookingeek).
+
+v3.14.3, three hours earlier, fixed *where* a command goes. It did not fix *what is inside it*.
+Three commands change their payload by model, and all three still read the model from the car the
+account listed first:
+
+- **windows** — the LEAP cars (B10/C10/B05) take 0–10, the T03 takes 0–100. On a T03-first account,
+  "windows to 50%" reached the C10 carrying the T03's `50`, which is off the C10's scale entirely;
+- **climate** — every write was rewritten to the T03's manual form (#67);
+- **A/C off** — the T03's full seven-field body went to cars that need `ac_switch operate=off`.
+
+The mirror case is the worse one: a **T03 second on a C10-first account never switched its A/C off
+from Home Assistant**, because it got the one form #67 proved the T03 ignores.
+
+The poller had already learned this — `_mqtt_windows_native` carries the scar in its own docstring
+— and had applied it to the windows alone, leaving A/C-off eight lines below untouched. Both now go
+through one `_mqtt_car_type(client, vin)`.
+
+🔑 Why yesterday's guard missed it: it forbids `self._vehicle`, and this was spelled
+`getattr(_session, "_vehicle", …)` in a module-level function. The guard is now on the attribute,
+however it is written. Only accounts with **two cars of different models** were affected.
+
+## 3.14.3 — 2026-08-17
+
+**With two cars, a command reaches the car you picked** (#253, @cookingeek).
+
+The session that talks to the cloud bound one vehicle when it logged in — the first the account
+lists — and the picker never touched it. Every read on the page was scoped to the selected car;
+every call to the cloud went to that first one. Lock and unlock, trunk, windows, climate, charge
+start and stop, unlock-charger — carrying that car's PIN. Pick the second car, press Unlock, and the
+first one opens.
+
+Seventeen call sites took their car from the login. Yesterday's v3.14.1 fixed three of them — the
+picture cache, the compose memo, the image token — and left the source, which is why the wrong car's
+picture came straight back. The frozen car also reached the fresh-signal dump behind Diagnostics and
+the bundle, the charge / climate / prepare-car schedules, and the whole consumption family (energy
+breakdown, weekly rank, cumulative summary, and the four raw probes in the BetaTester bundle) —
+which is almost certainly the "live stats not switching" half of the report.
+
+The car is now resolved on every use, never frozen: the picker moves under a live session. With one
+car, or with a selection naming a car the account no longer has, nothing changes.
+
 ## 3.14.2 — 2026-08-16
 
 **Six reports from four owners, and one of them had been waiting three weeks.**

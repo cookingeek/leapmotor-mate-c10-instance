@@ -3,6 +3,39 @@
 All notable changes to LeapMotor Mate are documented here.
 This project adheres to [Semantic Versioning](https://semver.org/).
 
+## 3.14.16 — 2026-08-26
+
+**The wallbox "Session energy" is the session, not the meter's whole life** (beta [#37](https://github.com/ProtossBlaster/MateBetaTesterOnly/issues/37), found by **@michapr**).
+
+The live Wallbox card printed the energy sensor raw. For a cumulative counter — a `_total` sensor,
+which is what Tasmota, Shelly and most smart plugs expose, and the very reading Mate deltas
+start-to-stop for each charge — that is the meter's entire life: @michapr's tile read 162.58 kWh
+under a label that says "Session energy". It now shows the reset-safe running figure the poller
+already keeps on the charge in progress, and "—" when nothing is charging (the honest answer when
+the car is asleep and no session was ever opened).
+
+## 3.14.15 — 2026-08-26
+
+**Always charging at home** (discussion [#255](https://github.com/ProtossBlaster/leapmotor-mate/discussions/255), asked by **@CartusGress**).
+
+An install with no wallbox and no Home Assistant has no signal that a charge happened at home, so
+every charge is born unclassified and the owner tags each one by hand — a lot of identical clicks for
+someone who only ever charges at home, several short top-ups a day. A new opt-in under Settings ▸
+Charge detection turns it around: while it is on, a new charge is born Home, editable afterwards for
+the rare public one. It works forward only — the past backlog is left exactly as it was — and, so it
+can never be switched on by accident, enabling it goes through an explicit confirm.
+
+## 3.14.14 — 2026-08-26
+
+**The monthly report's cost per 100 km counts the petrol too** (beta [#36](https://github.com/ProtossBlaster/MateBetaTesterOnly/issues/36), found by **@michapr**).
+
+On a range-extender the Report's "cost per 100 km" tile answered with only the electric charge: a
+month that burned a tank of petrol read 2.66 €/100 km where the real figure — electricity plus the
+petrol actually burned — was near 10. The litres were already shown right above it; only the cost
+side ignored them. It now adds the fuel at the same per-trip weighted-average price the Trips list
+and the day totals already use (litres burned × the tank's blended €/L), so all three pages agree.
+Verified on @michapr's August: **2.66 → 9.86 €/100 km**. Battery-only cars and months are untouched.
+
 ## 3.14.13 — 2026-08-26
 
 **Consumption against outside temperature, one point per trip** (Statistics page — inspired by

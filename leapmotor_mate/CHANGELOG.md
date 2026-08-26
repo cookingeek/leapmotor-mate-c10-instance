@@ -3,6 +3,32 @@
 All notable changes to LeapMotor Mate are documented here.
 This project adheres to [Semantic Versioning](https://semver.org/).
 
+## 3.14.12 — 2026-08-26
+
+**Edit a refuel after the fact** (beta discussion #34, asked by **@pdifeo**).
+
+The price is the one thing the cloud can never know about a refuel — and the one thing a pump
+receipt corrects: a discount applied at the till, a total that quietly includes a coffee. Until
+now the only way to fix a typed-wrong €/L was to delete the whole entry and retype it. Every refuel
+row on the Rifornimenti page now carries a ✏️ that opens the add form's twin in place, pre-filled:
+litres, €/L or total, note, and the instant itself. The server keeps the price pair consistent
+exactly as the add form does — a filled €/L wins over the total, and editing the litres re-prices
+the session against its €/L. The WAC's residual snapshot moves only when the instant moves, so a
+price correction never rewrites the blend behind every trip's fuel cost. Annulla swaps the row back
+without a reload; saving refreshes the list and the month calendar like every other fuel action.
+
+## 3.14.11 — 2026-08-26
+
+**One consumption figure, the same on every page** (beta #35, found by **@michapr**).
+
+The Trips, Statistics and Monthly Report pages each worked kWh/100km out their own way, so one month
+could read three numbers. On @michapr's July: **10.1** on Trips (getEC over the km getEC covers),
+**12.2** on Statistics (from `efficiency_kwh_100km`, over its own km, on UTC months, counting merged
+children), and a third on the Report (getEC's *driving* share instead of the total). The Statistics
+breakdown now runs on the same machinery the Trips calendar always has, and the Report's measured
+average reads the total getEC — so all three land on the same basis: getEC over the km getEC covers,
+local months, non-merged trips. Verified on his data: 10.1 everywhere.
+
 ## 3.14.10 — 2026-08-26
 
 **The charge-ETA target comes back on upgraded instances.**

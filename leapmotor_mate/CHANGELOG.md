@@ -3,6 +3,68 @@
 All notable changes to LeapMotor Mate are documented here.
 This project adheres to [Semantic Versioning](https://semver.org/).
 
+## 3.15.15 — 2026-09-12
+
+**Changed (beta #31):** the trip page's summary card is arranged in three areas — the trip
+(distance, duration and the total cost, now the largest figure on the card), the electricity, and,
+on a range extender that burned something, the fuel. Every figure it showed before is still there:
+none is computed differently and none was dropped. The litres and the L/100 km moved out of the
+energy tile into the fuel area, where the generator's own distance joins them, beside the petrol
+that produced it and still marked as a floor. The block at the foot of the card keeps what lives
+nowhere else: the battery and tank start→end, the split between the kWh paid for at a plug and the
+kWh the generator supplied, and the note on what the electric figure measures.
+
+**Fixed:** on a range-extender trip where the generator ran, the card printed `Avg consumption` over
+a dash. That figure is withheld on purpose — a ΔSoC consumption means nothing once the generator
+refills the pack mid-drive — so the label is no longer printed either, and the electricity area
+takes a single column instead of leaving an empty cell beside it. A car with no tank keeps its
+`Avg consumption`, `Energy used` and `Regen` tiles and gains no section headings: with one source
+there is nothing to tell apart.
+
+**Not included:** the share of the distance driven on electricity against the generator, which the
+same request asks for. There is no "generator on" signal in the cloud, the generator's kilometres
+are counted from the fuel drop and are short in one direction only (54.0 against a dashboard's
+60.2), and subtracting them from the distance inherits that error — over 32 real trips, 8 of the
+remainders went to zero or negative.
+
+**Tests:** the eight that pinned the old arrangement were rewritten around the same questions, not
+removed: the generator's distance must still be legible rather than footnote type, neither fuel
+figure may be torn from its unit, a car with no tank must gain no fuel line, and the five figures
+that live in one place each must still have a place. Four new keys in all eight languages.
+
+**Upgrade impact:** template and translations only. No database schema, migration, dependency,
+stored data or MQTT change, and no figure on the page is calculated differently. Rollback to
+v3.15.14 requires no data conversion.
+See [release and rollback notes](docs/releases/v3.15.15.md).
+
+## 3.15.14 — 2026-09-12
+
+**Fixed (#280):** an account with more than one car could not finish the setup wizard. The wizard
+draws a card per car and posts the answers as `vehicles_json`, but the check that runs on submit
+read only the single-car `battery` field — which the multi-car branch never fills. The result was
+"Please select a battery variant first." on a form where every pack *was* selected, with no way
+past it. The check now validates what is actually posted: every car must carry its own pack. The
+defect dates back to v3.13.0, the release that introduced the per-car cards.
+
+**Fixed:** on a multi-car account the account-wide capacity setting was left empty and fell back to
+65.0 kWh — a pack nobody had chosen. It now mirrors the first car's own answer, range-extender flag
+included. Each car's own capacity was, and remains, stored per vehicle.
+
+**Fixed:** a car whose model Mate does not recognise drew a card with a `Battery pack` heading and
+nothing under it, so its owner had nothing to choose and, with the check above, no way forward. The
+card now offers the same manual kWh field the wizard already shows when a single car is not
+recognised, feeding that car's own answer.
+
+**Tests:** six scenarios run the wizard's own JavaScript, rendered from the real template, in Node:
+two cars through, the account-wide mirror, a car with no pack refused, its manual field accepted and
+posted, the single-car path unchanged, and an empty form still refused. A second test guards the
+same invariant without Node.
+
+**Upgrade impact:** template-only change. No database schema, migration, dependency, stored data or
+MQTT change. An installation already set up is unaffected: this is the first-run wizard. Rollback to
+v3.15.13 requires no data conversion and restores the block.
+See [release and rollback notes](docs/releases/v3.15.14.md).
+
 ## 3.15.13 — 2026-09-11
 
 **Fixed (#276):** on the Maintenance page, the `+ Log` button of every service card did nothing.

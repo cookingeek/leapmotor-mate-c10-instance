@@ -3,6 +3,21 @@
 All notable changes to LeapMotor Mate are documented here.
 This project adheres to [Semantic Versioning](https://semver.org/).
 
+## 4.2.1 — 2026-09-27
+
+- Fix: a new installation is offered the certificate step again. From 4.0.0 the setup page showed only the application-bundle upload — a ZIP carrying private parameters no user can produce — so Mate could not be set up from scratch (#328). The wizard asks for app.crt and app.key again and installs the rest from the profile packaged in the image; the bundle upload remains only where a certificate pair genuinely cannot finish the installation. Existing installations were never affected.
+- Document the verified China cloud API flow in docs/CHINA-API-RESEARCH.md, contributed by @kerniger (#326). Documentation only: Chinese-market accounts remain unsupported.
+
+## 4.2.0 — 2026-09-27
+
+- Cloud commands reach every vehicle model, not only the B10: what a car may do is the data its own cloud entry publishes (abilities, account rights, control module) and the cloud's own refusal, never the model name.
+- Add sentry mode as a cloud command where the account declares the right for it.
+- Accept the T03's full seven-field payload for switching the climate completely off, and keep the B10's bare payload; neither is reshaped, because each model ignores the other's form.
+- Stop hiding the climate on a car that does not declare the air-conditioning ability but cools anyway (#67).
+- Keep heated seats and heated steering hidden on models measured without that hardware (#144), and make the page, the injected stylesheet and Home Assistant agree on one rule.
+- Stop offering a command after the cloud answers that this vehicle has no permission for it, per account binding.
+- Collect the cloud's per-trip history on every model, including range-extender fuel per trip, with the session the installation already holds.
+
 ## 4.1.0 — 2026-09-26
 
 - Show or hide frequent places on the map, remembering the choice in each browser (#315, PR323).

@@ -3,6 +3,26 @@
 All notable changes to LeapMotor Mate are documented here.
 This project adheres to [Semantic Versioning](https://semver.org/).
 
+## 4.4.0 — 2026-09-27
+
+- An account of any model qualifies for the independent cloud client. The verdict of the qualification probe was compared against a literal `['B10']`, so every other account was kept on the bundled SDK — where the consumption reads went out unsigned until 4.3.0 (#327, #330) and where the cloud trip-history card does not exist (#298). The gate had been opened inside the child process and left shut in the parent.
+- The qualification is asked again. The decision is kept per release and the marker had read 4.0.0 since 4.0.0, so an installation refused once was never re-examined. Installations kept on the bundled SDK migrate at the next start.
+- A session is renewed instead of bought again with a login. The cloud states the access token's life (7200 s) and issues a refresh token good for seven days; Mate kept neither and capped every session at thirty minutes, which cost ~48 logins a day. Renewal brings that to about one a week, the first lever on the login wall behind #296 and beta #49.
+- mate-api 0.1.0a11 vendored.
+
+## 4.3.1 — 2026-09-27
+
+- Fix: a car that loses the cloud for a minute mid-drive no longer loses the drive. Coming back from a dropout with a trip still open resumes that trip instead of opening another, and the kilometres of the gap stay in it rather than being declared as belonging to no trip (D #331: nine dropouts in one morning, ten trips opened, one closed). A silence longer than the frozen-drive guard, or one that happens while parked, keeps the previous behaviour.
+
+## 4.3.0 — 2026-09-27
+
+- Fix: an installation running the bundled SDK sends its consumption reads signed again. Since 4.0.0 the Trips consumption chart, the Monthly Report's driving energy and the per-trip enrichment were refused by the cloud with `code 39, Information verification failed`, because the SDK's header builders had been replaced by the independent client's marker for both backends at once (#327).
+- Fix: a charge that keeps going below the charge-detection floor keeps the energy it delivered. The energy of a charge ending at 100% is anchored to the last sample with the cable connected and current still entering the pack, instead of the last sample the detection floor called charging — on a 1.7 kW wallbox that was 7.8 points of SoC and 6.4 kWh (#316). Charges already recorded are recomputed once, only where that anchor moved, each keeping the kWh-per-point scale it was written with.
+- Fix: a window with no driving is read as the empty answer it is, instead of three attempts, three session resets and three logins.
+- The Overview says "Data stale" instead of "Driving" for a frame the poller's frozen-drive guard gave up on, and the missed-charge scan can reconstruct a charge taken while out of contact when the car drove at most 3 km out of it — BEV only, with a conservative regeneration budget (PR #329, @kerniger).
+- Fix: a poll carrying no SoC no longer removes a charge from the missed-charge scan.
+- The diagnostics bundle names the cloud client it is running.
+
 ## 4.2.1 — 2026-09-27
 
 - Fix: a new installation is offered the certificate step again. From 4.0.0 the setup page showed only the application-bundle upload — a ZIP carrying private parameters no user can produce — so Mate could not be set up from scratch (#328). The wizard asks for app.crt and app.key again and installs the rest from the profile packaged in the image; the bundle upload remains only where a certificate pair genuinely cannot finish the installation. Existing installations were never affected.

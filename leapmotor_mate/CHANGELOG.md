@@ -3,6 +3,33 @@
 All notable changes to LeapMotor Mate are documented here.
 This project adheres to [Semantic Versioning](https://semver.org/).
 
+## 4.7.15 — 2026-10-02
+
+- **A T03 saves its charge schedule and sets its charge limit again** ([#380](https://github.com/ProtossBlaster/leapmotor-mate/issues/380)). Command
+  190 rewrites the car's whole charge plan, so Mate reads it first and refuses when a field is missing —
+  the guard that keeps a B10's own flags as the car sent them (#343). A T03 has the simple scheduler (a
+  start time and a target, no window, no days) and its plan never carries every field: since 4.7.7, when
+  the T03 left the earlier library, the Charges page refused to save its schedule or set its limit
+  ("complete current charging configuration is required"). With the simple scheduler Mate now completes
+  the plan as that library did — every day, an 08:00 end, circulation 0, recharge 0 — and keeps what the
+  car reports; whether the schedule is on and when it starts are never filled. A car with the full
+  scheduler keeps the guard. The Home Assistant commands already completed a missing plan and are
+  unchanged.
+
+## 4.7.14 — 2026-10-02
+
+- **The chart of a running charge is on the Charges page, live** ([#379](https://github.com/ProtossBlaster/leapmotor-mate/pull/379), @arekm). While the
+  car is charging, the *📈 Charging data* chart of that charge sits among the cards at the top of the page
+  and grows with every poll: when it began and the charge level so far, the car's power with the minutes
+  left, the charge level and the temperatures. At home it draws the wallbox's line beside the car's: home
+  is the type set at the charge's start (a place recognised by GPS, or the always-at-home setting), or,
+  untyped, the wallbox delivering power while the car is plugged in. A pause with the cable in reads
+  0 kW. When the readings stop or the cloud re-serves an old frame, the LIVE badge gives way to the age
+  of the last reading.
+- **The Monthly Report is called Report** ([#370](https://github.com/ProtossBlaster/leapmotor-mate/pull/370)): on the current month its driving-energy
+  card opens on Today, and a page named after the month read as a mistake (@arekm). The menu entry and
+  the page title drop "monthly" in the eight languages; the page itself is unchanged.
+
 ## 4.7.13 — 2026-10-02
 
 - **A T03 takes commands again** ([#378](https://github.com/ProtossBlaster/leapmotor-mate/issues/378)). Before a command Mate checks the car's last

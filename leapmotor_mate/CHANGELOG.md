@@ -3,6 +3,28 @@
 All notable changes to LeapMotor Mate are documented here.
 This project adheres to [Semantic Versioning](https://semver.org/).
 
+## 4.11.2 — 2026-10-06
+
+- **The sunshade carries the official app's name in every language**: Sunshade, Pare-soleil,
+  Sonnenblende, Parasol, Zonnescherm, Osłona przeciwsłoneczna, Cortina — the names @arekm listed from
+  the app in #391; Italian («Parasole») went out in 4.11.1. The pages called it the panoramic roof on
+  the Vehicle and Commands tiles, and something else again in the confirmations, the Events and the
+  notice shown while driving. The Vehicle tile now says "open" and "closed" in the sunshade's own
+  words, which agree with the new names in Spanish, Portuguese and Polish; in Polish, on a phone, the
+  name breaks as «PRZECIW-SŁONECZNA» instead of running past the tile. The EN, FR, DE and ES manuals
+  and the English README follow. Home Assistant's entities (`Sunshade`, `Sunshade Position`) are
+  unchanged.
+
+## 4.11.1 — 2026-10-06
+
+- **In Italian, the sunshade is the «Parasole»**, the name the official app gives it. The Italian
+  pages called it three things: «Tetto panoramico» on the Vehicle and Commands tiles, «tendina» in
+  Events and in the confirmations, «parasole» in the notice shown while driving. They now say
+  «Parasole» everywhere — the tiles, the confirmations («Aprire il parasole?»), the Events rows
+  («Parasole aperto al 40%») and their filter — and the Commands tile reads «Aperto» / «Chiuso».
+  The Italian manual and README follow. The other languages and the Home Assistant entities
+  (`Sunshade`, `Sunshade Position`) are unchanged.
+
 ## 4.11.0 — 2026-10-06
 
 - **The T03's windows are offered and sent again**

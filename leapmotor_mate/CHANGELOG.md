@@ -3,6 +3,43 @@
 All notable changes to LeapMotor Mate are documented here.
 This project adheres to [Semantic Versioning](https://semver.org/).
 
+## 4.15.1 — 2026-10-11
+
+- **A charge ends when the energy stops, and a full battery says "Charge complete"**
+  ([#414](https://github.com/ProtossBlaster/leapmotor-mate/pull/414), @arekm). A car keeps its charge session open for a while after the energy stops,
+  with the cable in (for minutes on the B10s and up to hours on the T03s in the bundles #414 replayed).
+  Mate ended the charge only with the session, so until then the Overview said "Charging" and the charge's end and duration
+  counted that time. A charge now ends at the later of the first reading after its last charging
+  sample and its last SoC rise. With the cable in, nothing going in and the SoC within one point of
+  the car's charge limit (100 % if it reports none), the Overview reads "Cable connected · 100%
+  (Charge complete)" and the Charges page "Fully charged". The session's close is kept in a new
+  column, `charges.closed_at`; the wallbox counter and the custom-kWh helper are read up to it, as
+  before. Signal 3736, which no car in #414's data sends as a completion, is no longer read; it stays in
+  the diagnostics as `charge_completed_raw`.
+- **A row that ends on another day says which** ([#415](https://github.com/ProtossBlaster/leapmotor-mate/pull/415), @arekm). A charge from 23:05 to
+  06:40 the next day read "23:05 → 06:40"; it now reads "23:05 → 09 Oct 06:40", in the reader's
+  language: in the Charges and Trips drawers, the merge preview, the similar-trips page and a merged
+  trip's later pieces. A row within one day reads as before.
+
+## 4.15.0 — 2026-10-11
+
+- **A charge is a row that opens, like a trip; the Charges calendar opens several days**
+  ([#412](https://github.com/ProtossBlaster/leapmotor-mate/pull/412), @arekm). The day drawer drew a card of some 650 px per charge; each charge is now a
+  row, with a thumbnail of its power and SoC curve beside it, that opens under itself: the energy, a
+  line with the battery's temperature, the outside temperature and the average power, the chart, the
+  note on one line and the actions. Its editors (type, 🆓, ✎, 🧭 🔄 ✏️, the place) stay on the row and
+  work without opening it. Expand all / Collapse all beside the day's date. Shift-click, a drag or a
+  held day opens several days, with the totals of the range and of each day, as in the Trips calendar.
+  The chart under a charge reads Home Assistant off the event loop, and a Home Assistant that just
+  failed to answer is not asked by the next chart for a minute.
+- **The charging panel shows the power of a charge under 3 A** ([#409](https://github.com/ProtossBlaster/leapmotor-mate/issues/409)). "Charging status" and
+  the Overview's charging chip computed the power only from 3 A up: at a C10's 718 V a 1.7 kW home
+  charge carries 2.4 A, so they read 0.00 kW while the chart below drew the power. The same floor 3.18.3
+  took out of the poller (#307); now gone from the page too.
+- **A charge window saved on the Scheduling page shows on the Overview at once** ([#395](https://github.com/ProtossBlaster/leapmotor-mate/issues/395)). Since
+  3.10.0 the Overview read the window the poller filed under each car, refreshed every 30 minutes, so a
+  save the car had confirmed showed the old window until then.
+
 ## 4.14.2 — 2026-10-11
 
 - **A password Leapmotor refuses is named, and Mate waits an hour**

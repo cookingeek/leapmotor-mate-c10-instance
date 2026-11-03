@@ -3,6 +3,39 @@
 All notable changes to LeapMotor Mate are documented here.
 This project adheres to [Semantic Versioning](https://semver.org/).
 
+## 4.21.0 — 2026-11-03
+
+- **Free charges have their own slice in Home vs Public** ([#450](https://github.com/ProtossBlaster/leapmotor-mate/pull/450), @hubcasale). A charge typed Free
+  was counted as Public; it now has a lime slice and a *Free* tile of its own, shown only when there is
+  one. A Home charge marked free stays under Home. The legend of both rings on Charges is one compact
+  tile per kind: the sessions, the name, and under them the kWh and the share.
+
+## 4.20.0 — 2026-11-03
+
+- **Trips says the energy used** ([#456](https://github.com/ProtossBlaster/leapmotor-mate/pull/456), @arekm).
+  A fifth tile gives the energy all trips used, Statistics' Energy Used, and a day's heading, the month
+  strip and a searched period's total give their kWh. The energy card gives the cloud's *Total
+  consumption* beside the distance and the average, and the Report's tile beside it is called the same.
+  The tiles' icon sits above the figure at every width. A range-extender's Trips page is unchanged.
+- **A month's kWh adds up to Energy Used** ([#455](https://github.com/ProtossBlaster/leapmotor-mate/pull/455), @arekm).
+  Statistics' months and years, the Trips calendar and the monthly Report sum their trips by Energy
+  Used's rule, exactly, instead of multiplying a rounded average back by the kilometres; a trip that used
+  energy without moving now counts in its month. The *Avg consumption* tile on Trips leaves out a cloud
+  0.0 kWh the battery does not vouch for.
+
+## 4.19.0 — 2026-11-03
+
+- **The fan has as many speeds as the car declares** ([#447](https://github.com/ProtossBlaster/leapmotor-mate/pull/447), @arekm; [#445](https://github.com/ProtossBlaster/leapmotor-mate/issues/445), @Tommy73LMB05).
+  A car whose cloud entry declares more than seven fan speeds, such as a B10 with 1–9, gets them on the
+  Vehicle page, the Commands slider and Home Assistant's *Fan Level* number, and a new temperature or
+  recirculation at fan 9 keeps 9 instead of sending 7. The cloud library's climate check takes the
+  declared top, up to 9 ([MATE-API#9](https://github.com/ProtossBlaster/MATE-API/pull/9)). A car that
+  declares nothing, or seven speeds or fewer, keeps 1–7.
+- **A trip's regen counts the time each reading stands for** ([#454](https://github.com/ProtossBlaster/leapmotor-mate/pull/454), @arekm).
+  Each driving reading of regen counted the poll interval, but readings come further apart, so every trip
+  recorded too little regen. A reading now counts the time since the previous fresh frame on the car's
+  clock, or one interval where that cannot be told. Trips recorded before keep their figure.
+
 ## 4.18.1 — 2026-11-02
 
 - **The Location tracker in Home Assistant reads the zone of the car's coordinates** ([#453](https://github.com/ProtossBlaster/leapmotor-mate/issues/453), @scoprire87).

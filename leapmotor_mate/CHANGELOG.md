@@ -3,6 +3,21 @@
 All notable changes to LeapMotor Mate are documented here.
 This project adheres to [Semantic Versioning](https://semver.org/).
 
+## 5.0.2 — 2026-11-19
+
+See [the notes](docs/releases/v5.0.2.md).
+
+- **5.0.1's fix uses a module the desktop app declares.** The #495 fix used Python's `inspect`, which is not
+  in the list of modules MateDesktop is built with; it now uses `types`. Same behaviour as 5.0.1.
+
+## 5.0.1 — 2026-11-19
+
+See [the notes](docs/releases/v5.0.1.md).
+
+- **A Home Assistant command no longer loses the car's PIN** ([#495](https://github.com/ProtossBlaster/leapmotor-mate/issues/495), @chengler).
+  A command sent over MQTT while Mate was saving a reading could go out with no PIN ("Vehicle PIN is missing"), and
+  that reading was lost ("Frame processing failed"). The poller now uses its database from one thread at a time.
+
 ## 5.0.0 — 2026-11-17
 
 See [the notes](docs/releases/v5.0.0.md).
